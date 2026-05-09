@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SignalNews — Mobile Apps Coming Soon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:   #00E59B;
+    --green-2: #6EE7B7;
+    --bg-0:    #050510;
+    --text-1:  rgba(245,245,255,0.95);
+    --text-2:  rgba(200,200,235,0.78);
+    --text-3:  rgba(160,160,200,0.62);
+    --glass-border: rgba(255,255,255,0.08);
+    --r-md:    14px;
+    --r-lg:    20px;
+    --r-xl:    24px;
+    --ease:    cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-0);
+    color: var(--text-1);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(0,229,155,0.18), transparent 55%),
+      radial-gradient(ellipse at 80% 100%, rgba(0,229,155,0.10), transparent 55%);
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(0,229,155,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,155,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+  }
+
+  .nav {
+    position: relative; z-index: 5;
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 1200px; margin: 0 auto;
+    padding: 1.6rem 2rem;
+  }
+  .nav-back {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 0.85rem; font-weight: 600;
+    transition: color 0.25s;
+  }
+  .nav-back:hover { color: var(--text-1); }
+  .nav-back svg { width: 16px; height: 16px; }
+  .nav-brand {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 1rem;
+    color: var(--text-1);
+    text-decoration: none;
+  }
+  .nav-brand .nav-logo {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--green), #00B377);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 18px rgba(0,229,155,0.45);
+  }
+  .nav-brand .nav-logo svg { width: 18px; height: 18px; color: #03110A; }
+
+  .hero {
+    position: relative; z-index: 1;
+    max-width: 880px; margin: 2rem auto 0;
+    padding: 4rem 2rem 2rem;
+    text-align: center;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--green-2);
+    padding: 0.45rem 0.95rem;
+    border: 1px solid rgba(0,229,155,0.3);
+    border-radius: 100px;
+    background: rgba(0,229,155,0.06);
+    margin-bottom: 1.5rem;
+  }
+  .chip .pulse {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+    animation: chipPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes chipPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(0.8); }
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin-bottom: 1.2rem;
+  }
+  h1 .accent {
+    background: linear-gradient(135deg, var(--green), var(--green-2));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .lede {
+    font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+    color: var(--text-2);
+    max-width: 580px; margin: 0 auto 0.9rem;
+    line-height: 1.6;
+  }
+  .lede-ar {
+    font-size: clamp(0.9rem, 1.3vw, 1rem);
+    color: var(--text-3);
+    max-width: 580px; margin: 0 auto;
+    line-height: 1.7;
+    direction: rtl;
+  }
+
+  .apps {
+    position: relative; z-index: 1;
+    max-width: 880px; margin: 0 auto;
+    padding: 2rem 2rem 4rem;
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+  @media (max-width: 640px) { .apps { grid-template-columns: 1fr; } }
+  .app-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(8,28,22,0.55) 0%, rgba(4,18,14,0.7) 100%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-xl);
+    padding: 2rem 1.6rem;
+    text-align: center;
+    transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    overflow: hidden;
+  }
+  .app-card::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(circle at 50% 0%, rgba(0,229,155,0.12), transparent 60%);
+    opacity: 0.6; transition: opacity 0.4s;
+  }
+  .app-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0,229,155,0.3);
+    box-shadow: 0 22px 60px rgba(0,0,0,0.45), 0 0 50px rgba(0,229,155,0.12);
+  }
+  .app-card:hover::before { opacity: 1; }
+
+  .app-icon {
+    position: relative; z-index: 1;
+    width: 64px; height: 64px;
+    margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    color: var(--text-1);
+  }
+  .app-icon svg { width: 32px; height: 32px; }
+  .app-name {
+    position: relative; z-index: 1;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem; font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+  .app-platform {
+    position: relative; z-index: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 1.2rem;
+  }
+  .app-status {
+    position: relative; z-index: 1;
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.55rem 1rem;
+    border-radius: 100px;
+    background: rgba(0,229,155,0.1);
+    border: 1px solid rgba(0,229,155,0.25);
+    color: var(--green-2);
+    font-size: 0.78rem; font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.05em;
+  }
+  .app-status .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: chipPulse 1.6s ease-in-out infinite;
+  }
+
+  .notify {
+    position: relative; z-index: 1;
+    max-width: 540px; margin: 0 auto 4rem;
+    padding: 0 2rem;
+    text-align: center;
+  }
+  .notify h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .notify p {
+    color: var(--text-3);
+    font-size: 0.85rem;
+    margin-bottom: 1.1rem;
+  }
+  .notify-form {
+    display: flex; gap: 0.5rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    padding: 0.35rem 0.45rem 0.35rem 0.4rem;
+    transition: border-color 0.25s;
+  }
+  .notify-form:focus-within { border-color: rgba(0,229,155,0.45); }
+  .notify-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0.55rem 0.85rem;
+    color: var(--text-1);
+    font-family: inherit;
+    font-size: 0.85rem;
+    outline: none;
+    min-width: 0;
+  }
+  .notify-form input::placeholder { color: var(--text-4, rgba(140,140,180,0.5)); }
+  .notify-form button {
+    padding: 0.55rem 1.3rem;
+    background: var(--green);
+    color: #03110A;
+    border: none; border-radius: 100px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 0.82rem;
+    cursor: pointer;
+    transition: filter 0.25s, transform 0.25s;
+    white-space: nowrap;
+  }
+  .notify-form button:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .notify-msg {
+    margin-top: 0.85rem;
+    font-size: 0.78rem;
+    color: var(--green-2);
+    min-height: 1em;
+  }
+
+  .open-web {
+    position: relative; z-index: 1;
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+  .open-web a {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    padding: 0.85rem 1.6rem;
+    background: rgba(0,229,155,0.08);
+    border: 1px solid rgba(0,229,155,0.25);
+    border-radius: 100px;
+    color: var(--green-2);
+    text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 0.9rem;
+    transition: background 0.25s, transform 0.25s, border-color 0.25s;
+  }
+  .open-web a:hover {
+    background: rgba(0,229,155,0.14);
+    border-color: rgba(0,229,155,0.45);
+    transform: translateY(-1px);
+  }
+  .open-web a svg { width: 16px; height: 16px; }
+
+  .footer-line {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 1.5rem 2rem 3rem;
+    color: var(--text-3);
+    font-size: 0.78rem;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back to FZ Labs
+  </a>
+  <a href="https://signalnews.fzlabs.com" class="nav-brand">
+    <span class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    SignalNews
+  </a>
+</nav>
+
+<section class="hero">
+  <div class="chip"><span class="pulse"></span>Mobile Apps</div>
+  <h1>Coming <span class="accent">Soon</span></h1>
+  <p class="lede">SignalNews mobile apps for iOS and Android are on the way. Real-time financial signals, AI-curated news, and market data — right in your pocket.</p>
+  <p class="lede-ar">تطبيقات SignalNews للموبايل قريبًا على iOS و Android. تنبيهات مالية فورية وأخبار منتقاة بالذكاء الاصطناعي وأسعار السوق — كلها في جيبك.</p>
+</section>
+
+<section class="apps">
+  <div class="app-card">
+    <div class="app-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-2.85 2.33-4.21 2.43-4.27-1.32-1.93-3.39-2.2-4.12-2.23-1.76-.18-3.43 1.04-4.32 1.04-.9 0-2.27-1.02-3.73-.99-1.92.03-3.69 1.12-4.68 2.83-2 3.46-.51 8.59 1.42 11.4.95 1.38 2.07 2.92 3.53 2.86 1.42-.06 1.96-.92 3.68-.92 1.71 0 2.21.92 3.71.89 1.53-.03 2.5-1.4 3.43-2.78 1.08-1.6 1.53-3.15 1.55-3.23-.03-.01-2.99-1.15-3.02-4.6zm-2.83-8.46c.78-.95 1.31-2.27 1.16-3.58-1.13.05-2.49.75-3.3 1.7-.72.84-1.36 2.18-1.19 3.47 1.26.1 2.55-.65 3.33-1.59z"/></svg>
+    </div>
+    <div class="app-name">App Store</div>
+    <div class="app-platform">iOS · iPadOS</div>
+    <div class="app-status"><span class="dot"></span>Coming Soon</div>
+  </div>
+
+  <div class="app-card">
+    <div class="app-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-2.86-1.21-6.08-1.21-8.94 0L5.65 5.67c-.19-.29-.58-.38-.87-.2-.28.18-.37.54-.22.83L6.4 9.48C3.3 11.25 1.28 14.44 1 18h22c-.28-3.56-2.3-6.75-5.4-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25S8.25 13.31 8.25 14 7.69 15.25 7 15.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
+    </div>
+    <div class="app-name">Google Play</div>
+    <div class="app-platform">Android</div>
+    <div class="app-status"><span class="dot"></span>Coming Soon</div>
+  </div>
+</section>
+
+<section class="notify">
+  <h3>Get notified at launch</h3>
+  <p>Drop your email and we'll let you know the moment the apps go live.</p>
+  <form class="notify-form" id="notifyForm">
+    <input type="email" required placeholder="you@example.com" aria-label="Email address">
+    <button type="submit">Notify me</button>
+  </form>
+  <div class="notify-msg" id="notifyMsg"></div>
+</section>
+
+<section class="open-web">
+  <a href="https://signalnews.fzlabs.com">
+    Use SignalNews on the web in the meantime
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+  </a>
+</section>
+
+<div class="footer-line">© FZ Labs · SignalNews</div>
+
+<script>
+  const form = document.getElementById('notifyForm');
+  const msg = document.getElementById('notifyMsg');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = form.querySelector('input');
+    const email = (input.value || '').trim();
+    if (!email) return;
+    msg.textContent = "✓ Thanks! We'll email " + email + " at launch.";
+    input.value = '';
+  });
+</script>
+
+</body>
+</html>
