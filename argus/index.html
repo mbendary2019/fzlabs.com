@@ -7,7 +7,7 @@
 <meta name="description" content="The control plane for AI coding agents. Monitor sessions, govern actions, approve risk — from anywhere.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg-0:        #03050E;
@@ -56,17 +56,17 @@
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background-image: url("logos/Sci-fi planet.png");
     background-repeat: no-repeat;
-    background-position: center 110%;
+    background-position: center 115%;
     background-size: cover;
     background-attachment: fixed;
-    opacity: 0.55;
+    opacity: 0.5;
   }
   .bg-haze {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background:
-      radial-gradient(ellipse 60% 45% at 22% 18%, rgba(139,92,246,0.28), transparent 60%),
-      radial-gradient(ellipse 55% 45% at 80% 30%, rgba(0,212,255,0.13), transparent 60%),
-      radial-gradient(ellipse 80% 60% at 50% 95%, rgba(139,92,246,0.18), transparent 70%);
+      radial-gradient(ellipse 60% 45% at 22% 18%, rgba(139,92,246,0.32), transparent 60%),
+      radial-gradient(ellipse 55% 45% at 80% 30%, rgba(0,212,255,0.18), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 95%, rgba(139,92,246,0.22), transparent 70%);
     animation: hazeDrift 28s ease-in-out infinite alternate;
   }
   @keyframes hazeDrift {
@@ -76,7 +76,7 @@
   .bg-veil {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background:
-      radial-gradient(ellipse 90% 70% at 50% 18%, rgba(3,5,14,0.78), transparent 70%),
+      radial-gradient(ellipse 90% 70% at 50% 18%, rgba(3,5,14,0.82), transparent 70%),
       linear-gradient(180deg, rgba(3,5,14,0.78) 0%, rgba(3,5,14,0.32) 35%, rgba(3,5,14,0.32) 60%, rgba(3,5,14,0.85) 100%);
   }
   .bg-grid {
@@ -88,19 +88,70 @@
     mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, transparent 75%);
     -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, transparent 75%);
   }
+  /* Neural network background — animated SVG with pulsing nodes */
+  .bg-neural {
+    position: fixed;
+    top: 5%; left: 50%;
+    width: 1700px; max-width: 110vw; height: 900px;
+    transform: translateX(-50%);
+    z-index: 0; pointer-events: none;
+    opacity: 0.55;
+  }
+  .bg-neural svg { width: 100%; height: 100%; }
+  .nl { stroke: rgba(167,139,250,0.16); stroke-width: 0.4; fill: none; }
+  .nl.pulse {
+    stroke-dasharray: 2 220;
+    animation: linePulse 5s linear infinite;
+  }
+  .nl.pulse.d1 { animation-delay: 0s; }
+  .nl.pulse.d2 { animation-delay: 1.5s; }
+  .nl.pulse.d3 { animation-delay: 3s; }
+  @keyframes linePulse {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -440; }
+  }
+  .nn { fill: rgba(167,139,250,0.55); }
+  .nn.glow { filter: drop-shadow(0 0 4px rgba(167,139,250,0.85)); animation: nodeBlink 4s ease-in-out infinite; }
+  .nn.cyan { fill: rgba(103,232,249,0.6); filter: drop-shadow(0 0 4px rgba(103,232,249,0.85)); }
+  @keyframes nodeBlink {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1; }
+  }
+
+  /* Orbital rings — slower, layered */
   .bg-rings {
     position: fixed;
     top: -10%; left: 50%;
-    width: 1400px; height: 1400px;
+    width: 1600px; max-width: 120vw; height: 1600px;
     transform: translateX(-50%);
     z-index: 0; pointer-events: none;
-    opacity: 0.4;
+    opacity: 0.45;
   }
   .bg-rings svg { width: 100%; height: 100%; }
-  .ring { transform-origin: center; animation: ringSpin 60s linear infinite; }
-  .ring.r2 { animation-duration: 90s; animation-direction: reverse; }
-  .ring.r3 { animation-duration: 120s; }
+  .ring { transform-origin: center; animation: ringSpin 90s linear infinite; }
+  .ring.r2 { animation-duration: 130s; animation-direction: reverse; }
+  .ring.r3 { animation-duration: 180s; }
+  .ring.r4 { animation-duration: 240s; animation-direction: reverse; }
   @keyframes ringSpin { to { transform: rotate(360deg); } }
+
+  /* Radar sweep cone */
+  .bg-radar {
+    position: fixed;
+    top: -10%; left: 50%;
+    width: 1400px; max-width: 110vw; height: 1400px;
+    transform: translateX(-50%);
+    z-index: 0; pointer-events: none;
+    opacity: 0.18;
+  }
+  .bg-radar::before {
+    content:''; position: absolute; inset: 0;
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(139,92,246,0.5) 18deg, transparent 36deg, transparent 360deg);
+    border-radius: 50%;
+    mask-image: radial-gradient(circle, black 50%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle, black 50%, transparent 100%);
+    animation: radarSweep 9s linear infinite;
+  }
+  @keyframes radarSweep { to { transform: rotate(360deg); } }
 
   .bg-stars {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -112,8 +163,10 @@
       radial-gradient(1px 1px at 12% 80%, rgba(255,255,255,0.5), transparent),
       radial-gradient(1px 1px at 92% 22%, rgba(255,255,255,0.5), transparent),
       radial-gradient(1.5px 1.5px at 36% 14%, rgba(255,255,255,0.6), transparent),
-      radial-gradient(1px 1px at 58% 88%, rgba(255,255,255,0.5), transparent);
-    opacity: 0.55;
+      radial-gradient(1px 1px at 58% 88%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 4% 36%, rgba(255,255,255,0.55), transparent),
+      radial-gradient(1px 1px at 96% 68%, rgba(255,255,255,0.55), transparent);
+    opacity: 0.6;
   }
   .bg-particles {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -130,8 +183,8 @@
   .particle.cyan { background: var(--cyan-2); box-shadow: 0 0 8px rgba(103,232,249,0.7); }
   @keyframes floatUp {
     from { transform: translateY(110vh); opacity: 0; }
-    8%   { opacity: 0.7; }
-    92%  { opacity: 0.7; }
+    8%   { opacity: 0.8; }
+    92%  { opacity: 0.8; }
     to   { transform: translateY(-10vh); opacity: 0; }
   }
   .bg-scan {
@@ -149,8 +202,68 @@
   }
   .bg-vignette {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background: radial-gradient(ellipse at center, transparent 50%, rgba(3,5,14,0.55) 100%);
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(3,5,14,0.6) 100%);
   }
+
+  /* HUD corner reticles — fixed overlay */
+  .hud-corner {
+    position: fixed; z-index: 5; pointer-events: none;
+    width: 28px; height: 28px;
+    border: 1px solid rgba(167,139,250,0.45);
+    opacity: 0.7;
+  }
+  .hud-corner::after {
+    content:''; position: absolute;
+    background: rgba(167,139,250,0.75);
+    box-shadow: 0 0 8px rgba(167,139,250,0.7);
+  }
+  .hud-corner.tl { top: 14px; left: 14px; border-right: none; border-bottom: none; }
+  .hud-corner.tr { top: 14px; right: 14px; border-left: none; border-bottom: none; }
+  .hud-corner.bl { bottom: 14px; left: 14px; border-right: none; border-top: none; }
+  .hud-corner.br { bottom: 14px; right: 14px; border-left: none; border-top: none; }
+  /* tiny "+" inside */
+  .hud-corner::before {
+    content:''; position: absolute;
+    width: 8px; height: 1px;
+    background: rgba(167,139,250,0.7);
+  }
+  .hud-corner.tl::before { top: 8px; left: 8px; }
+  .hud-corner.tr::before { top: 8px; right: 8px; }
+  .hud-corner.bl::before { bottom: 8px; left: 8px; }
+  .hud-corner.br::before { bottom: 8px; right: 8px; }
+  .hud-corner.tl::after, .hud-corner.tr::after, .hud-corner.bl::after, .hud-corner.br::after {
+    width: 1px; height: 8px;
+  }
+  .hud-corner.tl::after { top: 4px; left: 10px; }
+  .hud-corner.tr::after { top: 4px; right: 10px; }
+  .hud-corner.bl::after { bottom: 4px; left: 10px; }
+  .hud-corner.br::after { bottom: 4px; right: 10px; }
+  @media (max-width: 720px) { .hud-corner { display: none; } }
+
+  /* HUD readout — fixed top-center small status strip */
+  .hud-readout {
+    position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+    z-index: 5; pointer-events: none;
+    display: flex; align-items: center; gap: 1.2rem;
+    padding: 5px 14px;
+    background: rgba(3,5,14,0.5);
+    border: 1px solid rgba(167,139,250,0.18);
+    border-radius: 100px;
+    backdrop-filter: blur(14px);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem; font-weight: 600;
+    color: var(--text-3);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .hud-readout .live-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 6px var(--green);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  .hud-readout span { display: inline-flex; align-items: center; gap: 5px; }
+  @media (max-width: 900px) { .hud-readout { display: none; } }
 
   /* ═══════════════════════════════════════════
      NAVBAR
@@ -165,7 +278,7 @@
   .nav::after {
     content:''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
     background: linear-gradient(90deg, transparent 10%, rgba(167,139,250,0.4) 50%, transparent 90%);
-    opacity: 0.5;
+    opacity: 0.6;
   }
   .nav-inner {
     max-width: 1380px; margin: 0 auto;
@@ -269,20 +382,21 @@
   }
 
   /* ═══════════════════════════════════════════
-     HERO — cinematic, dominating
+     HERO — full-bleed cinematic
   ═══════════════════════════════════════════ */
   .hero {
     position: relative; z-index: 1;
-    max-width: 1380px;
+    max-width: 1480px;
     margin: 0 auto;
-    padding: 5rem 2rem 4rem;
+    padding: 4rem 2.5rem 5rem;
     display: grid;
-    grid-template-columns: 0.95fr 1.1fr;
-    gap: 2.5rem;
+    grid-template-columns: 0.9fr 1.15fr;
+    gap: 2rem;
     align-items: center;
+    min-height: calc(100vh - 100px);
   }
   @media (max-width: 1100px) {
-    .hero { grid-template-columns: 1fr; padding-top: 3rem; gap: 4rem; }
+    .hero { grid-template-columns: 1fr; padding-top: 3rem; gap: 4rem; min-height: auto; }
   }
 
   /* Telemetry readout above hero */
@@ -293,13 +407,13 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.62rem; font-weight: 500;
     color: var(--text-3);
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     padding-bottom: 1.5rem;
-    border-bottom: 1px dashed rgba(167,139,250,0.12);
+    border-bottom: 1px dashed rgba(167,139,250,0.14);
     margin-bottom: 0.5rem;
     text-transform: uppercase;
   }
-  .hero-telemetry .group { display: inline-flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; }
+  .hero-telemetry .group { display: inline-flex; gap: 1.4rem; align-items: center; flex-wrap: wrap; }
   .hero-telemetry span { display: inline-flex; align-items: center; gap: 6px; }
   .hero-telemetry .live-dot {
     width: 6px; height: 6px; border-radius: 50%;
@@ -318,9 +432,9 @@
     letter-spacing: 0.18em; text-transform: uppercase;
     color: var(--purple-3);
     padding: 0.4rem 0.4rem 0.4rem 0.55rem;
-    border: 1px solid rgba(167,139,250,0.3);
+    border: 1px solid rgba(167,139,250,0.32);
     border-radius: 100px;
-    background: rgba(139,92,246,0.06);
+    background: rgba(139,92,246,0.08);
     backdrop-filter: blur(8px);
     margin-bottom: 1.7rem;
   }
@@ -336,11 +450,11 @@
 
   .hero h1 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(2.7rem, 6.4vw, 5.6rem);
+    font-size: clamp(2.8rem, 8.5vw, 7rem);
     font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 0.94;
-    margin-bottom: 1.5rem;
+    letter-spacing: -0.045em;
+    line-height: 0.88;
+    margin-bottom: 1.6rem;
     color: var(--text-1);
   }
   .hero h1 .line2 {
@@ -348,7 +462,7 @@
     background: linear-gradient(135deg, #F5F0FF 0%, var(--purple-2) 50%, var(--cyan) 100%);
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 32px rgba(139,92,246,0.55));
+    filter: drop-shadow(0 0 36px rgba(139,92,246,0.6));
     position: relative;
   }
   .hero h1 .glow-word {
@@ -356,36 +470,35 @@
     display: inline-block;
   }
   .hero h1 .glow-word::after {
-    content:''; position: absolute; left: 0; right: 0; top: 0; bottom: 0;
-    background: inherit;
-    filter: blur(28px);
-    opacity: 0.4;
+    content:''; position: absolute; left: -8%; right: -8%; top: 0; bottom: 0;
+    background: radial-gradient(ellipse, rgba(167,139,250,0.55), transparent 70%);
+    filter: blur(38px);
     z-index: -1;
     animation: keywordBreath 3.5s ease-in-out infinite;
   }
   @keyframes keywordBreath {
-    0%, 100% { opacity: 0.3; }
-    50%      { opacity: 0.7; }
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 0.95; }
   }
   .hero-sub {
     color: var(--text-2);
-    font-size: clamp(0.96rem, 1.35vw, 1.08rem);
-    max-width: 540px;
+    font-size: clamp(0.98rem, 1.4vw, 1.12rem);
+    max-width: 560px;
     line-height: 1.65;
-    margin-bottom: 2.2rem;
+    margin-bottom: 2rem;
   }
   .hero-sub b { color: var(--text-1); font-weight: 600; }
 
   .hero-ctas {
     display: flex; flex-wrap: wrap;
-    gap: 0.7rem; margin-bottom: 2rem;
+    gap: 0.7rem; margin-bottom: 1.8rem;
   }
   .btn {
     display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.92rem 1.55rem;
+    padding: 0.95rem 1.6rem;
     border-radius: 12px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.9rem; font-weight: 600;
+    font-size: 0.92rem; font-weight: 600;
     text-decoration: none;
     transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), background 0.3s var(--ease), border-color 0.3s var(--ease), filter 0.3s var(--ease);
     cursor: pointer; border: 1px solid transparent;
@@ -413,6 +526,63 @@
     backdrop-filter: blur(10px);
   }
   .btn-secondary:hover { background: rgba(139,92,246,0.1); border-color: rgba(167,139,250,0.5); transform: translateY(-2px); }
+
+  /* Live operations log under social proof */
+  .hero-log {
+    margin-top: 1.6rem;
+    padding: 0.9rem 1rem;
+    background: rgba(8,10,24,0.6);
+    border: 1px solid rgba(167,139,250,0.16);
+    border-radius: 12px;
+    backdrop-filter: blur(14px);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    line-height: 1.7;
+    max-width: 460px;
+    color: var(--text-2);
+    position: relative;
+    overflow: hidden;
+    height: 100px;
+  }
+  .hero-log::before {
+    content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(167,139,250,0.5), transparent);
+  }
+  .hero-log::after {
+    content:''; position: absolute; bottom: 0; left: 0; right: 0; height: 30px;
+    background: linear-gradient(180deg, transparent, rgba(8,10,24,0.85));
+    pointer-events: none;
+  }
+  .hero-log-h {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.55rem; font-weight: 700;
+    color: var(--purple-3);
+    letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .hero-log-h .live {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: var(--green-2);
+  }
+  .hero-log-h .live::before {
+    content:''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 5px var(--green);
+    animation: livePulse 1.4s ease-in-out infinite;
+  }
+  .hero-log-stream {
+    animation: streamUp 14s linear infinite;
+  }
+  @keyframes streamUp {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-50%); }
+  }
+  .log-row { white-space: nowrap; overflow: hidden; }
+  .log-row .ts  { color: var(--text-4); }
+  .log-row .ev  { color: var(--text-1); }
+  .log-row .ok  { color: var(--green-2); }
+  .log-row .wn  { color: var(--amber); }
+  .log-row .er  { color: var(--red-2); }
+  .log-row .py  { color: var(--purple-2); }
 
   /* Social proof */
   .social-proof {
@@ -443,29 +613,50 @@
   .social-meta .label { font-size: 0.78rem; color: var(--text-2); margin-top: 3px; font-weight: 500; }
 
   /* ═══════════════════════════════════════════
-     HERO STAGE — IDE + phone with depth
+     HERO STAGE — IDE + phone, dramatic depth
   ═══════════════════════════════════════════ */
   .hero-stage {
     position: relative;
     width: 100%;
-    aspect-ratio: 1.1 / 1;
-    max-width: 760px;
+    aspect-ratio: 1.05 / 1;
+    max-width: 880px;
     margin-left: auto;
     perspective: 2400px;
     perspective-origin: 50% 35%;
   }
   @media (max-width: 1100px) {
-    .hero-stage { margin-right: auto; max-width: 760px; }
+    .hero-stage { margin-right: auto; max-width: 800px; }
+  }
+
+  /* Targeting reticle around stage */
+  .stage-reticle {
+    position: absolute; inset: -2.5%;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  .stage-reticle .corner {
+    position: absolute;
+    width: 40px; height: 40px;
+    border: 1px solid rgba(167,139,250,0.55);
+  }
+  .stage-reticle .tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+  .stage-reticle .tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+  .stage-reticle .bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+  .stage-reticle .br { bottom: 0; right: 0; border-left: none; border-top: none; }
+  .stage-reticle .corner::after {
+    content:''; position: absolute;
+    background: rgba(167,139,250,0.7);
+    box-shadow: 0 0 6px rgba(167,139,250,0.7);
   }
 
   /* Ambient glow under stage */
   .hero-stage::before {
     content: ''; position: absolute;
-    left: -10%; right: -10%; top: 35%; bottom: -20%;
+    left: -10%; right: -10%; top: 30%; bottom: -20%;
     background:
-      radial-gradient(ellipse 60% 60% at 50% 50%, rgba(139,92,246,0.55), transparent 70%),
-      radial-gradient(ellipse 50% 60% at 80% 50%, rgba(0,212,255,0.25), transparent 65%);
-    filter: blur(50px); z-index: -1;
+      radial-gradient(ellipse 60% 60% at 50% 50%, rgba(139,92,246,0.6), transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 50%, rgba(0,212,255,0.3), transparent 65%);
+    filter: blur(55px); z-index: -1;
     pointer-events: none;
     animation: stageGlow 6s ease-in-out infinite alternate;
   }
@@ -474,28 +665,28 @@
     to   { opacity: 1; transform: scale(1.05); }
   }
 
-  /* Orbital ring around stage */
+  /* Orbital rings around stage */
   .stage-orbit {
     position: absolute;
     top: 50%; left: 50%; transform: translate(-50%, -50%);
     width: 130%; height: 130%;
     pointer-events: none;
-    opacity: 0.6;
+    opacity: 0.5;
   }
   .stage-orbit svg { width: 100%; height: 100%; animation: ringSpin 120s linear infinite; }
   .stage-orbit.r2 svg { animation-duration: 180s; animation-direction: reverse; }
 
   .ide {
     position: absolute;
-    inset: 0 14% 14% 0;
-    background: linear-gradient(180deg, rgba(15,18,38,0.92), rgba(8,10,24,0.94));
-    border: 1px solid rgba(167,139,250,0.25);
+    inset: 0 12% 14% 0;
+    background: linear-gradient(180deg, rgba(15,18,38,0.94), rgba(8,10,24,0.96));
+    border: 1px solid rgba(167,139,250,0.28);
     border-radius: 14px;
     overflow: hidden;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.07),
-      0 40px 100px rgba(0,0,0,0.6),
-      0 0 80px rgba(139,92,246,0.25);
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 50px 120px rgba(0,0,0,0.7),
+      0 0 100px rgba(139,92,246,0.3);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     display: flex; flex-direction: column;
@@ -507,17 +698,17 @@
   .ide::before {
     content:''; position: absolute; inset: 0;
     border-radius: inherit;
-    background: linear-gradient(135deg, rgba(167,139,250,0.18), transparent 35%, transparent 65%, rgba(0,212,255,0.12));
+    background: linear-gradient(135deg, rgba(167,139,250,0.22), transparent 35%, transparent 65%, rgba(0,212,255,0.16));
     pointer-events: none;
     mix-blend-mode: screen;
-    opacity: 0.7;
+    opacity: 0.8;
   }
 
   .ide-bar {
     display: flex; align-items: center; gap: 0.6rem;
     padding: 0.55rem 0.8rem;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    background: rgba(0,0,0,0.3);
+    background: rgba(0,0,0,0.32);
     flex-shrink: 0;
     position: relative;
   }
@@ -537,11 +728,11 @@
   .ide-body {
     flex: 1; min-height: 0;
     display: grid;
-    grid-template-columns: 92px 1fr;
+    grid-template-columns: 96px 1fr;
     overflow: hidden;
   }
   .ide-side {
-    background: rgba(0,0,0,0.3);
+    background: rgba(0,0,0,0.32);
     border-right: 1px solid rgba(255,255,255,0.04);
     padding: 0.6rem 0.4rem;
     overflow: hidden;
@@ -567,6 +758,7 @@
     margin: 0.5rem 0.15rem 0.3rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
+    display: flex; align-items: center; justify-content: space-between;
   }
   .ide-side-h .ct {
     background: rgba(167,139,250,0.18);
@@ -574,7 +766,6 @@
     padding: 1px 5px;
     border-radius: 100px;
     font-size: 0.4rem;
-    margin-left: 4px;
     font-weight: 600;
   }
   .ide-side-item {
@@ -589,13 +780,13 @@
   }
   .ide-side-item.act {
     background: rgba(245,158,11,0.12);
-    border-color: rgba(245,158,11,0.35);
-    box-shadow: 0 0 12px rgba(245,158,11,0.2);
+    border-color: rgba(245,158,11,0.4);
+    box-shadow: 0 0 12px rgba(245,158,11,0.25);
     animation: alertPulse 2s ease-in-out infinite;
   }
   @keyframes alertPulse {
     0%, 100% { box-shadow: 0 0 12px rgba(245,158,11,0.2); }
-    50%      { box-shadow: 0 0 20px rgba(245,158,11,0.45); }
+    50%      { box-shadow: 0 0 20px rgba(245,158,11,0.55); }
   }
   .ide-side-item .nm { color: var(--text-1); font-weight: 600; font-size: 0.5rem; }
   .ide-side-item .ago { font-size: 0.42rem; color: var(--text-3); margin-top: 1px; }
@@ -644,7 +835,7 @@
   }
   .ide-tabs {
     display: flex; align-items: center;
-    background: rgba(0,0,0,0.25);
+    background: rgba(0,0,0,0.28);
     border-bottom: 1px solid rgba(255,255,255,0.05);
     padding: 0.25rem 0.4rem 0;
     flex-shrink: 0;
@@ -687,16 +878,40 @@
   .tk-prp  { color: #FFCB6B; }
   .tk-var  { color: #EEFFFF; }
 
+  /* Status bar at bottom of IDE */
+  .ide-status {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.32rem 0.55rem;
+    background: rgba(139,92,246,0.12);
+    border-top: 1px solid rgba(167,139,250,0.2);
+    font-size: 0.46rem;
+    color: var(--text-2);
+    flex-shrink: 0;
+  }
+  .ide-status .seg {
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--text-1);
+    font-weight: 600;
+  }
+  .ide-status .seg .lbl { color: var(--text-3); font-weight: 500; }
+  .ide-status .seg.ok { color: var(--green-2); }
+  .ide-status .seg.warn { color: var(--amber); }
+  .ide-status .seg .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 4px currentColor;
+  }
+
   /* Tool Call Modal — sci-fi alert */
   .tool-modal {
     position: absolute;
     left: 8%; right: 8%;
-    bottom: 6%;
+    bottom: 12%;
     background: linear-gradient(180deg, rgba(15,18,38,0.96), rgba(11,16,32,0.98));
-    border: 1px solid rgba(239,68,68,0.45);
+    border: 1px solid rgba(239,68,68,0.5);
     border-radius: 10px;
     padding: 0.7rem 0.8rem;
-    box-shadow: 0 18px 40px rgba(0,0,0,0.6), 0 0 30px rgba(239,68,68,0.25);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.65), 0 0 35px rgba(239,68,68,0.3);
     backdrop-filter: blur(20px);
     animation: modalEnter 1s var(--ease) 0.6s both, riskGlow 2.4s ease-in-out 1.6s infinite;
   }
@@ -705,8 +920,8 @@
     to   { opacity: 1; transform: translateY(0); }
   }
   @keyframes riskGlow {
-    0%, 100% { box-shadow: 0 18px 40px rgba(0,0,0,0.6), 0 0 30px rgba(239,68,68,0.25); }
-    50%      { box-shadow: 0 18px 40px rgba(0,0,0,0.6), 0 0 50px rgba(239,68,68,0.55); }
+    0%, 100% { box-shadow: 0 18px 40px rgba(0,0,0,0.65), 0 0 35px rgba(239,68,68,0.3); }
+    50%      { box-shadow: 0 18px 40px rgba(0,0,0,0.65), 0 0 60px rgba(239,68,68,0.6); }
   }
   .tool-modal::before {
     content:''; position: absolute; top: -1px; left: 12%; right: 12%; height: 2px;
@@ -785,7 +1000,7 @@
     box-shadow: 0 4px 14px rgba(139,92,246,0.4);
   }
 
-  /* Phone overlapping right */
+  /* Phone — bigger and more dramatic */
   .phone {
     position: absolute;
     right: 0; top: 14%;
@@ -793,12 +1008,12 @@
     aspect-ratio: 0.48 / 1;
     background: linear-gradient(160deg, #181034 0%, #0a081e 100%);
     border-radius: 28px;
-    border: 1px solid rgba(167,139,250,0.28);
+    border: 1px solid rgba(167,139,250,0.32);
     padding: 14px 10px 10px;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.1),
-      0 35px 70px rgba(0,0,0,0.65),
-      0 0 60px rgba(139,92,246,0.3);
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      0 40px 80px rgba(0,0,0,0.7),
+      0 0 70px rgba(139,92,246,0.35);
     display: flex; flex-direction: column;
     overflow: hidden;
     transform: rotateY(-12deg) rotateX(3deg) translateZ(40px);
@@ -807,7 +1022,7 @@
   .phone::after {
     content:''; position:absolute; inset: 0;
     border-radius: inherit;
-    background: linear-gradient(135deg, rgba(167,139,250,0.18), transparent 30%, transparent 70%, rgba(167,139,250,0.1));
+    background: linear-gradient(135deg, rgba(167,139,250,0.22), transparent 30%, transparent 70%, rgba(167,139,250,0.12));
     pointer-events: none;
     mix-blend-mode: screen;
   }
@@ -837,7 +1052,6 @@
     font-weight: 800; font-size: 0.7rem;
   }
   .phone-h svg { width: 12px; height: 12px; color: var(--purple-2); }
-
   .phone-tabs {
     display: flex; gap: 4px;
     background: rgba(255,255,255,0.04);
@@ -855,7 +1069,7 @@
     color: var(--text-3);
   }
   .phone-tab.act {
-    background: rgba(167,139,250,0.2);
+    background: rgba(167,139,250,0.22);
     color: var(--text-1);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
   }
@@ -868,7 +1082,6 @@
     margin-left: 3px;
     font-size: 0.42rem;
   }
-
   .phone-cards {
     display: flex; flex-direction: column;
     gap: 5px;
@@ -884,9 +1097,9 @@
     flex-shrink: 0;
   }
   .phone-card.featured {
-    background: linear-gradient(180deg, rgba(239,68,68,0.1), rgba(15,18,38,0.7));
-    border-color: rgba(239,68,68,0.4);
-    box-shadow: 0 4px 14px rgba(239,68,68,0.18);
+    background: linear-gradient(180deg, rgba(239,68,68,0.12), rgba(15,18,38,0.7));
+    border-color: rgba(239,68,68,0.45);
+    box-shadow: 0 4px 14px rgba(239,68,68,0.2);
     animation: alertPulse 2.4s ease-in-out infinite;
   }
   .pc-row { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
@@ -938,7 +1151,6 @@
     color: #fff;
     box-shadow: 0 3px 8px rgba(139,92,246,0.4);
   }
-
   .phone-nav {
     display: flex; justify-content: space-around;
     margin-top: auto;
@@ -954,7 +1166,7 @@
   .phone-nav-item.act { color: var(--purple-2); }
   .phone-nav-item svg { width: 10px; height: 10px; }
 
-  /* Floating annotations on hero stage */
+  /* Floating annotations */
   .stage-annot {
     position: absolute;
     font-family: 'JetBrains Mono', monospace;
@@ -966,35 +1178,144 @@
     pointer-events: none;
   }
   .stage-annot .label {
-    background: rgba(15,12,32,0.85);
-    border: 1px solid rgba(167,139,250,0.32);
-    padding: 4px 8px;
+    background: rgba(15,12,32,0.92);
+    border: 1px solid rgba(167,139,250,0.4);
+    padding: 5px 9px;
     border-radius: 4px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
     white-space: nowrap;
   }
   .stage-annot .label .v { color: var(--text-1); font-weight: 700; }
   .stage-annot::before {
     content:''; position: absolute;
-    width: 50px; height: 1px;
+    width: 60px; height: 1px;
     background: linear-gradient(90deg, var(--purple-2), transparent);
     top: 50%;
+    box-shadow: 0 0 6px rgba(167,139,250,0.5);
   }
   .stage-annot.a-tl {
-    top: 18%; left: -3%;
+    top: 16%; left: -5%;
   }
-  .stage-annot.a-tl::before { right: -55px; transform: rotate(0deg); }
+  .stage-annot.a-tl::before { right: -64px; }
   .stage-annot.a-br {
-    bottom: 22%; right: -3%;
+    bottom: 26%; right: -3%;
   }
-  .stage-annot.a-br::before { left: -55px; background: linear-gradient(-90deg, var(--purple-2), transparent); }
+  .stage-annot.a-br::before { left: -64px; background: linear-gradient(-90deg, var(--purple-2), transparent); }
   @media (max-width: 1100px) {
     .stage-annot { display: none; }
   }
 
   /* ═══════════════════════════════════════════
-     SECTION DIVIDER + EYEBROW
+     OPERATIONS LIVE — telemetry strip
+  ═══════════════════════════════════════════ */
+  .ops-section {
+    position: relative; z-index: 1;
+    max-width: 1380px; margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+  .ops-section::before, .ops-section::after {
+    content:''; position: absolute; left: 50%; transform: translateX(-50%);
+    width: 70%; height: 1px;
+    background: linear-gradient(90deg, transparent 5%, rgba(167,139,250,0.3) 50%, transparent 95%);
+  }
+  .ops-section::before { top: 0; }
+  .ops-section::after { bottom: 0; }
+  .ops-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .ops-head h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.05rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-1);
+    display: inline-flex; align-items: center; gap: 0.6rem;
+  }
+  .ops-head h3::before {
+    content:''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 8px var(--green);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  .ops-head .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; color: var(--text-3);
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .ops-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.9rem;
+  }
+  @media (max-width: 880px) { .ops-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .ops-grid { grid-template-columns: 1fr; } }
+  .ops-cell {
+    position: relative;
+    padding: 1.2rem 1.3rem;
+    background: linear-gradient(180deg, rgba(15,18,38,0.5), rgba(8,10,24,0.7));
+    border: 1px solid rgba(167,139,250,0.14);
+    border-radius: var(--r-md);
+    backdrop-filter: blur(14px);
+    overflow: hidden;
+  }
+  .ops-cell::before {
+    content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(167,139,250,0.4), transparent);
+  }
+  .ops-cell-h {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-3);
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .ops-cell-h .delta {
+    font-weight: 700;
+    color: var(--green-2);
+    font-size: 0.6rem;
+  }
+  .ops-cell .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.2rem; font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text-1);
+    margin-bottom: 0.2rem;
+  }
+  .ops-cell .num .unit {
+    font-size: 1rem; font-weight: 600;
+    color: var(--text-3);
+    margin-left: 4px;
+  }
+  .ops-cell .desc {
+    font-size: 0.72rem;
+    color: var(--text-3);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+  .ops-cell .bar {
+    margin-top: 0.7rem;
+    height: 3px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .ops-cell .bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--purple-2));
+    border-radius: inherit;
+    box-shadow: 0 0 6px rgba(167,139,250,0.5);
+    animation: barFill 4s ease-in-out infinite alternate;
+  }
+  @keyframes barFill {
+    from { transform: scaleX(0.6); transform-origin: left; }
+    to   { transform: scaleX(1); transform-origin: left; }
+  }
+
+  /* ═══════════════════════════════════════════
+     SECTION TITLES (un-boxed)
   ═══════════════════════════════════════════ */
   .sec {
     position: relative; z-index: 1;
@@ -1025,7 +1346,6 @@
     font-weight: 500;
     letter-spacing: 0.12em;
   }
-
   .sec-head {
     text-align: center;
     max-width: 760px;
@@ -1035,9 +1355,9 @@
   .sec-head .sec-marker::before { display: none; }
   .sec-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(2rem, 4.5vw, 3.4rem);
+    font-size: clamp(2rem, 4.8vw, 3.6rem);
     font-weight: 800;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.035em;
     line-height: 1.05;
     margin-bottom: 1rem;
     color: var(--text-1);
@@ -1091,49 +1411,57 @@
   .trusted-logo.midj { letter-spacing: -0.005em; font-weight: 600; }
 
   /* ═══════════════════════════════════════════
-     PIPELINE — How Argus Works (cinematic)
+     PIPELINE — full SVG cinematic flow
   ═══════════════════════════════════════════ */
-  .pipeline-stage {
+  .pipeline-wrap {
     position: relative;
-    margin: 1rem 0 2rem;
-    padding: 2rem 0 1rem;
+    margin: 1rem 0;
+    aspect-ratio: 4 / 1;
+    min-height: 320px;
   }
-  .pipeline-track {
-    position: absolute; left: 6%; right: 6%; top: 50%; height: 1px;
-    background: rgba(167,139,250,0.18);
-    transform: translateY(-50%);
-    z-index: 0;
+  @media (max-width: 1000px) { .pipeline-wrap { aspect-ratio: auto; min-height: auto; } }
+
+  .pipeline-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
   }
-  .pipeline-track::before {
-    content:''; position: absolute; inset: 0;
-    background: linear-gradient(90deg, transparent, var(--purple-2) 50%, transparent);
-    background-size: 25% 100%;
-    background-repeat: no-repeat;
-    animation: signalFlow 4s linear infinite;
-    filter: drop-shadow(0 0 6px var(--purple-2));
+  @media (max-width: 1000px) { .pipeline-svg { display: none; } }
+  .pp-track { stroke: rgba(167,139,250,0.22); stroke-width: 1; fill: none; }
+  .pp-flow {
+    stroke: url(#pp-flow-grad);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 8 200;
+    animation: ppFlow 4s linear infinite;
+    filter: drop-shadow(0 0 4px rgba(167,139,250,0.7));
   }
-  @keyframes signalFlow {
-    from { background-position: -25% 0; }
-    to   { background-position: 125% 0; }
+  @keyframes ppFlow {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -416; }
   }
+  .pp-particle {
+    fill: var(--cyan-2);
+    filter: drop-shadow(0 0 6px var(--cyan-2));
+  }
+
   .pipeline {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 0;
+    align-items: start;
     position: relative;
-    z-index: 1;
+    z-index: 2;
+    height: 100%;
   }
   @media (max-width: 1000px) {
     .pipeline { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; }
-    .pipeline-track { display: none; }
   }
-  @media (max-width: 580px) {
-    .pipeline { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 580px) { .pipeline { grid-template-columns: 1fr; } }
   .step {
     text-align: center;
     padding: 0 0.5rem;
     position: relative;
+    align-self: center;
   }
   .step-node {
     width: 96px; height: 96px;
@@ -1141,36 +1469,38 @@
     position: relative;
     display: flex; align-items: center; justify-content: center;
   }
-  .step-node-rings {
-    position: absolute; inset: 0;
-    pointer-events: none;
-  }
+  .step-node-rings { position: absolute; inset: 0; pointer-events: none; }
   .step-node-rings svg { width: 100%; height: 100%; }
   .step-node-rings .r1 { animation: ringSpin 18s linear infinite; transform-origin: center; }
   .step-node-rings .r2 { animation: ringSpin 30s linear infinite reverse; transform-origin: center; }
   .step-node-bg {
     width: 64px; height: 64px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(139,92,246,0.35), rgba(15,12,32,0.95) 70%);
-    border: 1px solid rgba(167,139,250,0.45);
+    background: radial-gradient(circle, rgba(139,92,246,0.4), rgba(15,12,32,0.95) 70%);
+    border: 1px solid rgba(167,139,250,0.5);
     display: flex; align-items: center; justify-content: center;
     color: var(--purple-2);
     box-shadow:
-      inset 0 0 18px rgba(139,92,246,0.25),
-      0 0 24px rgba(139,92,246,0.4);
+      inset 0 0 18px rgba(139,92,246,0.3),
+      0 0 28px rgba(139,92,246,0.5);
     position: relative;
     z-index: 2;
+    animation: nodeBreath 3.5s ease-in-out infinite;
+  }
+  @keyframes nodeBreath {
+    0%, 100% { box-shadow: inset 0 0 18px rgba(139,92,246,0.3), 0 0 24px rgba(139,92,246,0.45); }
+    50%      { box-shadow: inset 0 0 22px rgba(139,92,246,0.4), 0 0 38px rgba(139,92,246,0.7); }
   }
   .step-node-bg svg { width: 24px; height: 24px; }
   .step:hover .step-node-bg {
     color: var(--cyan);
-    box-shadow: inset 0 0 18px rgba(0,212,255,0.3), 0 0 30px rgba(0,212,255,0.5);
-    border-color: rgba(0,212,255,0.5);
+    box-shadow: inset 0 0 22px rgba(0,212,255,0.4), 0 0 35px rgba(0,212,255,0.6);
+    border-color: rgba(0,212,255,0.6);
     transition: all 0.4s var(--ease);
   }
   .step-num {
     position: absolute;
-    bottom: -6px; right: 14%;
+    bottom: -4px; right: 14%;
     width: 22px; height: 22px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--purple), var(--purple-deep));
@@ -1179,7 +1509,7 @@
     display: flex; align-items: center; justify-content: center;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700; font-size: 0.66rem;
-    box-shadow: 0 4px 12px rgba(139,92,246,0.5);
+    box-shadow: 0 4px 12px rgba(139,92,246,0.55);
     z-index: 3;
   }
   .step h4 {
@@ -1206,7 +1536,7 @@
   }
 
   /* ═══════════════════════════════════════════
-     CORE FEATURES — immersive grid
+     CORE FEATURES
   ═══════════════════════════════════════════ */
   .features {
     display: grid;
@@ -1217,7 +1547,7 @@
   @media (max-width: 580px) { .features { grid-template-columns: 1fr; } }
   .feat {
     background: linear-gradient(180deg, rgba(15,18,38,0.45), rgba(8,10,24,0.65));
-    border: 1px solid rgba(167,139,250,0.12);
+    border: 1px solid rgba(167,139,250,0.13);
     border-radius: var(--r-lg);
     padding: 1.6rem 1.5rem;
     backdrop-filter: blur(14px);
@@ -1228,24 +1558,24 @@
   .feat::before {
     content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
     background: linear-gradient(90deg, transparent, rgba(167,139,250,0.45), transparent);
-    opacity: 0.4;
+    opacity: 0.45;
     transition: opacity 0.4s;
   }
   .feat:hover {
     transform: translateY(-3px);
-    border-color: rgba(167,139,250,0.32);
-    box-shadow: 0 24px 60px rgba(0,0,0,0.4), 0 0 60px rgba(139,92,246,0.15);
+    border-color: rgba(167,139,250,0.34);
+    box-shadow: 0 28px 70px rgba(0,0,0,0.45), 0 0 70px rgba(139,92,246,0.18);
   }
   .feat:hover::before { opacity: 1; }
   .feat-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
   .feat-icon {
     width: 44px; height: 44px;
     border-radius: 11px;
-    background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.04));
-    border: 1px solid rgba(167,139,250,0.32);
+    background: linear-gradient(135deg, rgba(139,92,246,0.22), rgba(139,92,246,0.04));
+    border: 1px solid rgba(167,139,250,0.34);
     display: inline-flex; align-items: center; justify-content: center;
     color: var(--purple-2);
-    box-shadow: inset 0 0 10px rgba(139,92,246,0.18);
+    box-shadow: inset 0 0 12px rgba(139,92,246,0.2);
   }
   .feat-icon svg { width: 20px; height: 20px; }
   .feat-code {
@@ -1278,7 +1608,7 @@
   .feat-link svg { width: 12px; height: 12px; }
 
   /* ═══════════════════════════════════════════
-     GET ARGUS — immersive 3 zones
+     GET ARGUS
   ═══════════════════════════════════════════ */
   .get-grid {
     display: grid;
@@ -1288,7 +1618,7 @@
   @media (max-width: 880px) { .get-grid { grid-template-columns: 1fr; } }
   .get-card {
     background: linear-gradient(180deg, rgba(15,18,38,0.55), rgba(8,10,24,0.78));
-    border: 1px solid rgba(167,139,250,0.15);
+    border: 1px solid rgba(167,139,250,0.16);
     border-radius: var(--r-2xl);
     padding: 1.8rem 1.6rem;
     position: relative;
@@ -1346,10 +1676,7 @@
     color: var(--purple-2);
     filter: drop-shadow(0 0 18px rgba(167,139,250,0.45));
   }
-
-  .get-store-row {
-    display: flex; gap: 0.4rem; margin-bottom: 0.8rem;
-  }
+  .get-store-row { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
   .store-badge {
     flex: 1;
     display: flex; align-items: center; gap: 0.4rem;
@@ -1364,7 +1691,6 @@
   .store-badge svg { width: 18px; height: 18px; flex-shrink: 0; color: #fff; }
   .store-badge .lbl1 { font-size: 0.5rem; color: var(--text-3); display: block; line-height: 1; }
   .store-badge .lbl2 { font-size: 0.72rem; color: var(--text-1); font-weight: 700; display: block; line-height: 1; margin-top: 2px; font-family: 'Space Grotesk', sans-serif; }
-
   .get-action {
     display: inline-flex; align-items: center; gap: 0.45rem;
     padding: 0.7rem 1rem;
@@ -1379,7 +1705,7 @@
     width: 100%;
     justify-content: center;
     transition: filter 0.25s, transform 0.25s;
-    box-shadow: 0 6px 18px rgba(139,92,246,0.32);
+    box-shadow: 0 6px 18px rgba(139,92,246,0.35);
   }
   .get-action:hover { filter: brightness(1.1); transform: translateY(-1px); }
   .get-action svg { width: 14px; height: 14px; }
@@ -1394,7 +1720,7 @@
   .get-link svg { width: 11px; height: 11px; }
 
   /* ═══════════════════════════════════════════
-     GOVERNANCE / PRICING — operations tiers
+     PRICING — governance tiers
   ═══════════════════════════════════════════ */
   .price-grid {
     display: grid; grid-template-columns: repeat(3, 1fr);
@@ -1422,9 +1748,7 @@
     background: linear-gradient(180deg, rgba(139,92,246,0.1), rgba(20,15,45,0.7));
     box-shadow: 0 35px 80px rgba(139,92,246,0.22);
   }
-  .price.featured::before {
-    background: linear-gradient(90deg, transparent, rgba(167,139,250,0.7), transparent);
-  }
+  .price.featured::before { background: linear-gradient(90deg, transparent, rgba(167,139,250,0.7), transparent); }
   .price-row {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 0.8rem;
@@ -1469,10 +1793,7 @@
     -webkit-text-fill-color: transparent;
     font-size: 1.4rem;
   }
-  /* Allocation bars */
-  .price-alloc {
-    margin-bottom: 1.4rem;
-  }
+  .price-alloc { margin-bottom: 1.4rem; }
   .alloc-row {
     display: grid; grid-template-columns: 80px 1fr;
     align-items: center;
@@ -1638,7 +1959,6 @@
     transition: color 0.25s;
   }
   .foot-col a:hover { color: var(--text-1); }
-
   .foot-bottom {
     max-width: 1280px; margin: 0 auto;
     padding-top: 1.5rem;
@@ -1689,6 +2009,11 @@
       <stop offset="0%" stop-color="#A78BFA"/>
       <stop offset="100%" stop-color="#00D4FF"/>
     </linearGradient>
+    <linearGradient id="pp-flow-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="50%" stop-color="#67E8F9"/>
+      <stop offset="100%" stop-color="#A78BFA"/>
+    </linearGradient>
   </defs>
 </svg>
 
@@ -1698,24 +2023,72 @@
 <div class="bg-veil"></div>
 <div class="bg-grid"></div>
 <div class="bg-stars"></div>
-<div class="bg-rings">
-  <svg viewBox="-200 -200 400 400" fill="none">
-    <ellipse class="ring" cx="0" cy="0" rx="180" ry="60" stroke="rgba(167,139,250,0.32)" stroke-width="0.5" stroke-dasharray="3 4"/>
-    <ellipse class="ring r2" cx="0" cy="0" rx="190" ry="70" stroke="rgba(0,212,255,0.22)" stroke-width="0.5" transform="rotate(35)"/>
-    <ellipse class="ring r3" cx="0" cy="0" rx="170" ry="80" stroke="rgba(167,139,250,0.18)" stroke-width="0.5" stroke-dasharray="1 5" transform="rotate(-25)"/>
+<div class="bg-radar"></div>
+
+<!-- Neural network background -->
+<div class="bg-neural">
+  <svg viewBox="-850 -400 1700 800" fill="none" preserveAspectRatio="xMidYMid slice">
+    <!-- Network lines -->
+    <path class="nl pulse d1" d="M -700 -200 Q -400 -100 -100 -150 T 500 -180 Q 700 -100 800 -200"/>
+    <path class="nl pulse d2" d="M -750 0 Q -400 -50 0 80 T 600 50 L 800 100"/>
+    <path class="nl pulse d3" d="M -700 200 Q -300 100 100 180 T 700 200"/>
+    <path class="nl" d="M -700 -200 L -400 0 L -100 -150"/>
+    <path class="nl" d="M -100 -150 L 200 50 L 500 -180"/>
+    <path class="nl" d="M -400 0 L 0 80"/>
+    <path class="nl" d="M 200 50 L 600 50"/>
+    <path class="nl" d="M -300 100 L 0 80 L 100 180"/>
+    <path class="nl" d="M 100 180 L 500 -180"/>
+    <!-- Nodes -->
+    <circle class="nn glow" cx="-700" cy="-200" r="3"/>
+    <circle class="nn glow" cx="-400" cy="0" r="3"/>
+    <circle class="nn cyan" cx="-100" cy="-150" r="3"/>
+    <circle class="nn glow" cx="200" cy="50" r="3"/>
+    <circle class="nn cyan" cx="500" cy="-180" r="3"/>
+    <circle class="nn glow" cx="800" cy="-200" r="3"/>
+    <circle class="nn glow" cx="0" cy="80" r="3"/>
+    <circle class="nn cyan" cx="600" cy="50" r="3"/>
+    <circle class="nn glow" cx="-300" cy="100" r="3"/>
+    <circle class="nn glow" cx="100" cy="180" r="3"/>
+    <circle class="nn cyan" cx="700" cy="200" r="3"/>
+    <circle class="nn glow" cx="-750" cy="0" r="2"/>
   </svg>
 </div>
+
+<!-- Orbital rings -->
+<div class="bg-rings">
+  <svg viewBox="-200 -200 400 400" fill="none">
+    <ellipse class="ring"    cx="0" cy="0" rx="180" ry="60" stroke="rgba(167,139,250,0.32)" stroke-width="0.5" stroke-dasharray="3 4"/>
+    <ellipse class="ring r2" cx="0" cy="0" rx="190" ry="70" stroke="rgba(0,212,255,0.22)"  stroke-width="0.5" transform="rotate(35)"/>
+    <ellipse class="ring r3" cx="0" cy="0" rx="170" ry="80" stroke="rgba(167,139,250,0.18)" stroke-width="0.5" stroke-dasharray="1 5" transform="rotate(-25)"/>
+    <ellipse class="ring r4" cx="0" cy="0" rx="195" ry="55" stroke="rgba(0,212,255,0.16)"  stroke-width="0.4" stroke-dasharray="6 8" transform="rotate(70)"/>
+  </svg>
+</div>
+
 <div class="bg-particles">
-  <span class="particle" style="left: 12%; animation-delay: 0s; animation-duration: 22s;"></span>
-  <span class="particle cyan" style="left: 28%; animation-delay: 4s; animation-duration: 18s;"></span>
-  <span class="particle" style="left: 42%; animation-delay: 9s; animation-duration: 24s;"></span>
-  <span class="particle" style="left: 56%; animation-delay: 2s; animation-duration: 20s;"></span>
-  <span class="particle cyan" style="left: 68%; animation-delay: 11s; animation-duration: 26s;"></span>
-  <span class="particle" style="left: 82%; animation-delay: 6s; animation-duration: 19s;"></span>
-  <span class="particle" style="left: 92%; animation-delay: 14s; animation-duration: 22s;"></span>
+  <span class="particle" style="left: 8%; animation-delay: 0s; animation-duration: 22s;"></span>
+  <span class="particle cyan" style="left: 22%; animation-delay: 4s; animation-duration: 18s;"></span>
+  <span class="particle" style="left: 38%; animation-delay: 9s; animation-duration: 24s;"></span>
+  <span class="particle" style="left: 52%; animation-delay: 2s; animation-duration: 20s;"></span>
+  <span class="particle cyan" style="left: 64%; animation-delay: 11s; animation-duration: 26s;"></span>
+  <span class="particle" style="left: 78%; animation-delay: 6s; animation-duration: 19s;"></span>
+  <span class="particle" style="left: 90%; animation-delay: 14s; animation-duration: 22s;"></span>
+  <span class="particle cyan" style="left: 16%; animation-delay: 7s; animation-duration: 21s;"></span>
+  <span class="particle" style="left: 46%; animation-delay: 15s; animation-duration: 23s;"></span>
+  <span class="particle" style="left: 72%; animation-delay: 12s; animation-duration: 17s;"></span>
 </div>
 <div class="bg-vignette"></div>
 <div class="bg-scan"></div>
+
+<!-- HUD overlay -->
+<div class="hud-corner tl"></div>
+<div class="hud-corner tr"></div>
+<div class="hud-corner bl"></div>
+<div class="hud-corner br"></div>
+<div class="hud-readout">
+  <span><span class="live-dot"></span>SYS NOMINAL</span>
+  <span>RELAY · BAH-1</span>
+  <span>v0.1.4</span>
+</div>
 
 <!-- ═══ NAVBAR ═══ -->
 <nav class="nav">
@@ -1737,7 +2110,7 @@
     <div class="nav-links">
       <a href="#features">Features</a>
       <a href="#how">Workflow</a>
-      <a href="#security">Security</a>
+      <a href="#ops">Operations</a>
       <a href="#pricing">Pricing</a>
       <a href="#docs">Docs</a>
       <a href="#changelog">Changelog</a>
@@ -1806,9 +2179,40 @@
         <div class="label">Loved by AI builders worldwide</div>
       </div>
     </div>
+
+    <!-- Live operations log -->
+    <div class="hero-log">
+      <div class="hero-log-h">
+        <span>OPERATIONS LOG</span>
+        <span class="live">LIVE</span>
+      </div>
+      <div class="hero-log-stream">
+        <div class="log-row"><span class="ts">09:01:42</span> <span class="py">[argus]</span> <span class="ev">session.attached</span> <span class="ok">✓</span> payment-service</div>
+        <div class="log-row"><span class="ts">09:01:43</span> <span class="py">[agent]</span> <span class="ev">tool.intercept</span> stripe.charge <span class="wn">⚠</span> $2,499</div>
+        <div class="log-row"><span class="ts">09:01:43</span> <span class="py">[argus]</span> <span class="ev">approval.requested</span> → operator-1</div>
+        <div class="log-row"><span class="ts">09:01:47</span> <span class="py">[argus]</span> <span class="ev">approval.granted</span> <span class="ok">✓</span> 4.1s</div>
+        <div class="log-row"><span class="ts">09:01:48</span> <span class="py">[agent]</span> <span class="ev">action.continue</span> <span class="ok">✓</span></div>
+        <div class="log-row"><span class="ts">09:01:55</span> <span class="py">[agent]</span> <span class="ev">tests.passing</span> <span class="ok">✓</span> 142/142</div>
+        <!-- Repeat for seamless loop -->
+        <div class="log-row"><span class="ts">09:01:42</span> <span class="py">[argus]</span> <span class="ev">session.attached</span> <span class="ok">✓</span> payment-service</div>
+        <div class="log-row"><span class="ts">09:01:43</span> <span class="py">[agent]</span> <span class="ev">tool.intercept</span> stripe.charge <span class="wn">⚠</span> $2,499</div>
+        <div class="log-row"><span class="ts">09:01:43</span> <span class="py">[argus]</span> <span class="ev">approval.requested</span> → operator-1</div>
+        <div class="log-row"><span class="ts">09:01:47</span> <span class="py">[argus]</span> <span class="ev">approval.granted</span> <span class="ok">✓</span> 4.1s</div>
+        <div class="log-row"><span class="ts">09:01:48</span> <span class="py">[agent]</span> <span class="ev">action.continue</span> <span class="ok">✓</span></div>
+        <div class="log-row"><span class="ts">09:01:55</span> <span class="py">[agent]</span> <span class="ev">tests.passing</span> <span class="ok">✓</span> 142/142</div>
+      </div>
+    </div>
   </div>
 
   <div class="hero-stage">
+    <!-- Targeting reticle around stage -->
+    <div class="stage-reticle">
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+    </div>
+
     <!-- Annotations -->
     <div class="stage-annot a-tl">
       <div class="label"><span class="v">SESSION-04</span> · waiting</div>
@@ -1817,15 +2221,15 @@
       <div class="label"><span class="v">RISK</span> high · gated</div>
     </div>
 
-    <!-- Orbit ring around stage -->
+    <!-- Orbits -->
     <div class="stage-orbit">
       <svg viewBox="-200 -200 400 400" fill="none">
-        <ellipse cx="0" cy="0" rx="195" ry="80" stroke="rgba(167,139,250,0.18)" stroke-width="0.6" stroke-dasharray="2 4"/>
+        <ellipse cx="0" cy="0" rx="195" ry="80" stroke="rgba(167,139,250,0.2)" stroke-width="0.6" stroke-dasharray="2 4"/>
       </svg>
     </div>
     <div class="stage-orbit r2">
       <svg viewBox="-200 -200 400 400" fill="none">
-        <ellipse cx="0" cy="0" rx="170" ry="100" stroke="rgba(0,212,255,0.14)" stroke-width="0.6" transform="rotate(28)"/>
+        <ellipse cx="0" cy="0" rx="170" ry="100" stroke="rgba(0,212,255,0.16)" stroke-width="0.6" transform="rotate(28)"/>
       </svg>
     </div>
 
@@ -1849,7 +2253,7 @@
             <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 L20 8 L20 17 L12 22 L4 17 L4 8 Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></svg>
             <span class="lbl">ARGUS</span>
           </div>
-          <div class="ide-side-h">Sessions <span class="ct">04</span></div>
+          <div class="ide-side-h"><span>Sessions</span><span class="ct">04</span></div>
           <div class="ide-side-item">
             <span class="nm">E-commerce API</span>
             <span class="ago">12m ago</span>
@@ -1875,7 +2279,7 @@
             New Session
           </div>
           <div class="ide-side-health">
-            <div class="ide-side-h">Health</div>
+            <div class="ide-side-h"><span>Health</span></div>
             <div class="ok"><span class="dot"></span>All systems nominal</div>
           </div>
         </div>
@@ -1919,6 +2323,14 @@
               <div class="tm-btn rej">Reject</div>
               <div class="tm-btn app">Approve</div>
             </div>
+          </div>
+
+          <!-- Status bar -->
+          <div class="ide-status mono">
+            <span class="seg ok"><span class="dot"></span>RELAY · 142ms</span>
+            <span class="seg"><span class="lbl">git</span>main</span>
+            <span class="seg warn"><span class="dot"></span>1 PENDING</span>
+            <span class="seg"><span class="lbl">ts</span>strict</span>
           </div>
         </div>
       </div>
@@ -2024,6 +2436,40 @@
   </div>
 </section>
 
+<!-- ═══ OPERATIONS LIVE ═══ -->
+<section class="ops-section" id="ops">
+  <div class="ops-head">
+    <h3>Operations · Live</h3>
+    <div class="meta">REGION · BAH-1 · UPDATED 1s AGO</div>
+  </div>
+  <div class="ops-grid">
+    <div class="ops-cell">
+      <div class="ops-cell-h"><span>Active Agents</span><span class="delta">+12</span></div>
+      <div class="num" id="op-agents">142</div>
+      <div class="desc">across 38 projects</div>
+      <div class="bar"><div class="fill" style="width:68%"></div></div>
+    </div>
+    <div class="ops-cell">
+      <div class="ops-cell-h"><span>Pending Approvals</span><span class="delta" style="color:var(--amber);">+3</span></div>
+      <div class="num" id="op-pending">23</div>
+      <div class="desc">avg wait · 4.2s</div>
+      <div class="bar"><div class="fill" style="width:42%; background:linear-gradient(90deg, var(--amber), #FBBF24);"></div></div>
+    </div>
+    <div class="ops-cell">
+      <div class="ops-cell-h"><span>Round-Trip Latency</span><span class="delta">-8ms</span></div>
+      <div class="num" id="op-latency">148<span class="unit">ms</span></div>
+      <div class="desc">p99 · BAH-1 relay</div>
+      <div class="bar"><div class="fill" style="width:25%; background:linear-gradient(90deg, var(--green), var(--green-2));"></div></div>
+    </div>
+    <div class="ops-cell">
+      <div class="ops-cell-h"><span>Tool Calls / min</span><span class="delta">+47</span></div>
+      <div class="num" id="op-calls">2,847</div>
+      <div class="desc">last 60 seconds</div>
+      <div class="bar"><div class="fill" style="width:82%"></div></div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ HOW IT WORKS — cinematic pipeline ═══ -->
 <section class="sec" id="how">
   <div class="sec-head">
@@ -2032,8 +2478,22 @@
     <p class="sec-lede">Every tool call your AI wants to run flows through Argus, hits your phone, and waits for your call. Five nodes. One feedback loop. Sub-200ms round-trip.</p>
   </div>
 
-  <div class="pipeline-stage">
-    <div class="pipeline-track"></div>
+  <div class="pipeline-wrap">
+    <!-- SVG flow path with traveling particle -->
+    <svg class="pipeline-svg" viewBox="0 0 1000 200" preserveAspectRatio="none">
+      <path class="pp-track" d="M 100 100 Q 200 60, 300 100 T 500 100 T 700 100 T 900 100"/>
+      <path class="pp-flow"  d="M 100 100 Q 200 60, 300 100 T 500 100 T 700 100 T 900 100"/>
+      <circle class="pp-particle" r="4">
+        <animateMotion dur="4s" repeatCount="indefinite" path="M 100 100 Q 200 60, 300 100 T 500 100 T 700 100 T 900 100"/>
+      </circle>
+      <circle class="pp-particle" r="3" opacity="0.7">
+        <animateMotion dur="4s" begin="-1.3s" repeatCount="indefinite" path="M 100 100 Q 200 60, 300 100 T 500 100 T 700 100 T 900 100"/>
+      </circle>
+      <circle class="pp-particle" r="3" opacity="0.5">
+        <animateMotion dur="4s" begin="-2.6s" repeatCount="indefinite" path="M 100 100 Q 200 60, 300 100 T 500 100 T 700 100 T 900 100"/>
+      </circle>
+    </svg>
+
     <div class="pipeline">
       <div class="step">
         <div class="step-node">
@@ -2415,6 +2875,33 @@
     </div>
   </div>
 </footer>
+
+<script>
+  // Subtle live counter animation for ops cells
+  (function() {
+    const cells = [
+      { id: 'op-agents',   base: 142,  variance: 6 },
+      { id: 'op-pending',  base: 23,   variance: 4 },
+      { id: 'op-latency',  base: 148,  variance: 12, suffix: 'ms' },
+      { id: 'op-calls',    base: 2847, variance: 80, comma: true }
+    ];
+    function tick() {
+      cells.forEach(c => {
+        const el = document.getElementById(c.id);
+        if (!el) return;
+        const offset = Math.floor((Math.random() - 0.5) * c.variance);
+        let v = c.base + offset;
+        let txt = c.comma ? v.toLocaleString('en-US') : String(v);
+        if (c.suffix) {
+          el.innerHTML = txt + '<span class="unit">' + c.suffix + '</span>';
+        } else {
+          el.textContent = txt;
+        }
+      });
+    }
+    setInterval(tick, 2400);
+  })();
+</script>
 
 </body>
 </html>
