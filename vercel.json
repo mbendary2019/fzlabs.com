@@ -5,7 +5,7 @@
     {
       "source": "/",
       "has": [{ "type": "host", "value": "argus.fzlabs.com" }],
-      "destination": "/argus/index.html"
+      "destination": "/argus"
     },
     {
       "source": "/(.*)",
@@ -14,7 +14,7 @@
     },
     {
       "source": "/",
-      "destination": "/main/index.html"
+      "destination": "/main"
     },
     {
       "source": "/(.*)",
