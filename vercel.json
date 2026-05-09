@@ -1,6 +1,18 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "argus.fzlabs.com" }],
+      "destination": "/argus/index.html"
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "argus.fzlabs.com" }],
+      "destination": "/argus/:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)\\.(png|jpg|jpeg|svg|webp|gif|ico)",
