@@ -8,9 +8,17 @@
       "destination": "/argus/index.html"
     },
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "argus.fzlabs.com" }],
-      "destination": "/argus/:path*"
+      "destination": "/argus/$1"
+    },
+    {
+      "source": "/",
+      "destination": "/main/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/main/$1"
     }
   ],
   "headers": [
