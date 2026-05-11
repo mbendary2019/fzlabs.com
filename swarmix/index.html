@@ -1034,6 +1034,28 @@
   .view-all:hover { gap: 0.65rem; color: var(--honey-2); }
   .view-all svg { width: 13px; height: 13px; }
 
+  .tpl-nav { display: inline-flex; gap: 0.5rem; }
+  .tpl-arrow {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: rgba(20,12,4,0.65);
+    border: 1px solid rgba(255,170,60,0.32);
+    color: var(--honey-3);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 0.25s, border-color 0.25s, transform 0.25s, color 0.25s, box-shadow 0.25s;
+    backdrop-filter: blur(10px);
+  }
+  .tpl-arrow:hover {
+    background: rgba(255,157,0,0.18);
+    border-color: rgba(255,170,60,0.6);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(255,157,0,0.4);
+  }
+  .tpl-arrow:active { transform: translateY(0) scale(0.95); }
+  .tpl-arrow svg { width: 16px; height: 16px; }
+
   /* Templates — horizontal scrollable strip */
   .templates-scroll {
     position: relative;
@@ -2556,10 +2578,17 @@
 <section class="sec" id="templates">
   <div class="sec-head-row">
     <h2 class="sec-title-inline">Start with <span class="accent">Professional Templates</span></h2>
-    <a href="#" class="view-all">View all templates <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    <div class="tpl-nav">
+      <button class="tpl-arrow" data-dir="-1" aria-label="Previous templates">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="tpl-arrow" data-dir="1" aria-label="Next templates">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
   </div>
   <div class="templates-scroll">
-    <div class="templates-row">
+    <div class="templates-row" id="tpl-row">
       <div class="tpl"><img src="logos/t1.png" alt="Template 1"></div>
       <div class="tpl"><img src="logos/t2.png" alt="Template 2"></div>
       <div class="tpl"><img src="logos/t3.png" alt="Template 3"></div>
@@ -2759,7 +2788,7 @@
 <!-- ═══ FEATURES ═══ -->
 <section class="sec" id="features">
   <div class="sec-head">
-    <div class="sec-marker"><span class="code">06 / CAPABILITIES</span></div>
+    <div class="sec-marker"><span class="code">02 / CAPABILITIES</span></div>
     <h2 class="sec-title">Everything you need to <span class="accent">build &amp; scale.</span></h2>
     <p class="sec-lede">Eight primitives that turn an idea into a shipped product.</p>
   </div>
@@ -2838,7 +2867,7 @@
 <section class="sec pricing-sec" id="pricing">
   <div class="pricing-bg"></div>
   <div class="sec-head">
-    <div class="sec-marker"><span class="code">07 / PRICING</span></div>
+    <div class="sec-marker"><span class="code">03 / PRICING</span></div>
     <h2 class="sec-title">Simple plans. <span class="accent">Honest pricing.</span></h2>
     <p class="sec-lede">Start free. Scale when you ship. No hidden tokens.</p>
   </div>
@@ -2982,6 +3011,20 @@
       card.style.setProperty('--my', `${e.clientY - r.top}px`);
     });
   });
+
+  // Templates carousel — left/right arrows
+  (function () {
+    const row = document.getElementById('tpl-row');
+    if (!row) return;
+    document.querySelectorAll('.tpl-arrow').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dir = parseInt(btn.dataset.dir, 10) || 1;
+        const card = row.querySelector('.tpl');
+        const step = card ? (card.offsetWidth + 14) : 240;
+        row.scrollBy({ left: dir * step * 2, behavior: 'smooth' });
+      });
+    });
+  })();
 </script>
 
 </body>
