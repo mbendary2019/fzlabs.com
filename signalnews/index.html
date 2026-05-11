@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SignalNews — News Worth Money</title>
+<meta name="description" content="AI-curated financial signals that move markets. Real-time tickers, breaking news, and trade-grade analysis built for operators.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-0:        #03080A;
+    --bg-1:        #061214;
+    --bg-2:        #0A1A1F;
+    --green:       #10B981;
+    --green-2:     #6EE7B7;
+    --green-3:     #A7F3D0;
+    --green-deep:  #047857;
+    --cyan:        #22D3EE;
+    --cyan-2:      #67E8F9;
+    --red:         #EF4444;
+    --red-2:       #FCA5A5;
+    --amber:       #FBBF24;
+    --text-1:      rgba(245,250,247,0.97);
+    --text-2:      rgba(195,220,210,0.74);
+    --text-3:      rgba(150,180,170,0.55);
+    --text-4:      rgba(120,150,140,0.4);
+    --text-5:      rgba(100,125,118,0.32);
+    --line:        rgba(110,231,183,0.18);
+    --line-2:      rgba(255,255,255,0.06);
+    --card:        rgba(8,18,16,0.72);
+    --card-2:      rgba(12,26,22,0.78);
+    --card-border: rgba(110,231,183,0.22);
+    --r-md: 12px; --r-lg: 16px; --r-xl: 22px; --r-2xl: 28px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-0);
+    color: var(--text-1);
+    overflow-x: hidden;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    position: relative;
+  }
+  ::selection { background: rgba(16,185,129,0.35); color: #fff; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ═══════════════════════════════════════════
+     BACKGROUND
+  ═══════════════════════════════════════════ */
+  .bg-base {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 50% at 18% 20%, rgba(16,185,129,0.18), transparent 65%),
+      radial-gradient(ellipse 55% 45% at 82% 25%, rgba(34,211,238,0.12), transparent 65%),
+      radial-gradient(ellipse 80% 60% at 50% 95%, rgba(16,185,129,0.14), transparent 70%);
+  }
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(110,231,183,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(110,231,183,0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, transparent 75%);
+  }
+  /* Sweeping scan line */
+  .bg-scan {
+    position: fixed; left: 0; right: 0; top: 0; height: 1px; z-index: 0;
+    background: linear-gradient(90deg, transparent, rgba(110,231,183,0.55), transparent);
+    box-shadow: 0 0 14px rgba(110,231,183,0.5);
+    animation: scan 11s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes scan {
+    0%, 100% { transform: translateY(-2px); opacity: 0; }
+    8%, 92%  { opacity: 1; }
+    100%     { transform: translateY(100vh); opacity: 0; }
+  }
+  .bg-vignette {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(3,8,10,0.55) 100%);
+  }
+  /* HUD corner reticles */
+  .hud {
+    position: fixed; z-index: 5; pointer-events: none;
+    width: 26px; height: 26px;
+    border: 1px solid rgba(110,231,183,0.42);
+    opacity: 0.55;
+  }
+  .hud.tl { top: 56px; left: 14px; border-right: none; border-bottom: none; }
+  .hud.tr { top: 56px; right: 14px; border-left: none; border-bottom: none; }
+  .hud.bl { bottom: 14px; left: 14px; border-right: none; border-top: none; }
+  .hud.br { bottom: 14px; right: 14px; border-left: none; border-top: none; }
+  @media (max-width: 720px) { .hud { display: none; } }
+
+  /* ═══════════════════════════════════════════
+     TOP TICKER BAR — live scrolling
+  ═══════════════════════════════════════════ */
+  .ticker-bar {
+    position: sticky; top: 0; z-index: 110;
+    background: rgba(3,8,10,0.92);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    height: 38px;
+    display: flex; align-items: center;
+  }
+  .ticker-label {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0 1rem;
+    height: 100%;
+    background: rgba(16,185,129,0.12);
+    border-right: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; font-weight: 700;
+    color: var(--green-2);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .ticker-label .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: livePulse 1.5s ease-in-out infinite;
+  }
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.7); }
+  }
+  .ticker-track {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+  }
+  .ticker-strip {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    gap: 2.2rem;
+    padding-left: 2rem;
+    animation: tickerScroll 60s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes tickerScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .tk {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; font-weight: 600;
+    color: var(--text-1);
+  }
+  .tk .sym {
+    color: var(--text-2);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .tk .price { color: var(--text-1); }
+  .tk .chg { font-size: 0.66rem; font-weight: 700; }
+  .tk .chg.up   { color: var(--green-2); }
+  .tk .chg.down { color: var(--red-2); }
+  .tk .arrow { font-size: 0.55rem; opacity: 0.9; }
+
+  /* ═══════════════════════════════════════════
+     NAVBAR
+  ═══════════════════════════════════════════ */
+  .nav {
+    position: sticky; top: 38px; z-index: 100;
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    background: rgba(3,8,10,0.78);
+    border-bottom: 1px solid var(--line-2);
+  }
+  .nav::after {
+    content:''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+    background: linear-gradient(90deg, transparent 10%, rgba(110,231,183,0.4) 50%, transparent 90%);
+    opacity: 0.5;
+  }
+  .nav-inner {
+    max-width: 1380px; margin: 0 auto;
+    padding: 0.85rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .nav-brand {
+    display: inline-flex; align-items: center; gap: 0.65rem;
+    color: var(--text-1);
+  }
+  .nav-logo {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 18px rgba(16,185,129,0.45);
+    position: relative;
+  }
+  .nav-logo svg { width: 19px; height: 19px; color: #03110A; }
+  .nav-logo::after {
+    content:''; position:absolute; inset: -4px;
+    background: radial-gradient(circle, rgba(16,185,129,0.5), transparent 70%);
+    filter: blur(10px); z-index: -1;
+    animation: logoBreath 3s ease-in-out infinite;
+  }
+  @keyframes logoBreath {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+  .nav-text { display: flex; flex-direction: column; line-height: 1; }
+  .nav-text .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800; font-size: 1.05rem;
+    letter-spacing: -0.01em;
+  }
+  .nav-text .name em {
+    font-style: normal;
+    color: var(--green-2);
+  }
+  .nav-text .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem; font-weight: 500;
+    color: var(--text-3);
+    letter-spacing: 0.12em;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 1.7rem; }
+  .nav-links a {
+    color: var(--text-2);
+    font-size: 0.85rem; font-weight: 500;
+    transition: color 0.25s, text-shadow 0.25s;
+  }
+  .nav-links a:hover { color: var(--text-1); text-shadow: 0 0 14px rgba(110,231,183,0.55); }
+  .nav-actions { display: flex; align-items: center; gap: 0.55rem; }
+  .nav-status {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 100px;
+    background: rgba(16,185,129,0.08);
+    border: 1px solid rgba(16,185,129,0.25);
+    color: var(--green-2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+  .nav-status .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  .nav-signin {
+    color: var(--text-1);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    transition: background 0.25s;
+  }
+  .nav-signin:hover { background: rgba(255,255,255,0.05); }
+  .nav-cta {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.62rem 1.15rem;
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%);
+    border: 1px solid rgba(110,231,183,0.55);
+    border-radius: 100px;
+    color: #fff;
+    font-size: 0.85rem; font-weight: 700;
+    transition: filter 0.25s, transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 6px 22px rgba(16,185,129,0.4), inset 0 1px 0 rgba(255,255,255,0.18);
+    position: relative; overflow: hidden;
+  }
+  .nav-cta::before {
+    content:''; position: absolute; top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.32), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.7s var(--ease);
+  }
+  .nav-cta:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 14px 32px rgba(16,185,129,0.55); }
+  .nav-cta:hover::before { left: 140%; }
+  .nav-cta svg { width: 13px; height: 13px; position: relative; z-index: 1; }
+  @media (max-width: 1080px) {
+    .nav-links { display: none; }
+    .nav-status { display: none; }
+  }
+  @media (max-width: 540px) {
+    .nav-signin { display: none; }
+    .nav-text .tag { display: none; }
+  }
+
+  /* ═══════════════════════════════════════════
+     BREAKING NEWS STRIP
+  ═══════════════════════════════════════════ */
+  .breaking {
+    position: relative;
+    background: rgba(239,68,68,0.06);
+    border-bottom: 1px solid rgba(239,68,68,0.18);
+    overflow: hidden;
+    z-index: 5;
+    height: 30px;
+    display: flex; align-items: center;
+  }
+  .breaking-label {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0 1rem;
+    height: 100%;
+    background: rgba(239,68,68,0.18);
+    border-right: 1px solid rgba(239,68,68,0.32);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; font-weight: 700;
+    color: var(--red-2);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .breaking-label .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 8px var(--red);
+    animation: livePulse 1s ease-in-out infinite;
+  }
+  .breaking-track { flex: 1; overflow: hidden; height: 100%; position: relative; }
+  .breaking-strip {
+    display: inline-flex; align-items: center; height: 100%;
+    gap: 2.4rem; padding-left: 2rem;
+    animation: tickerScroll 90s linear infinite;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    color: var(--text-2);
+  }
+  .breaking-strip .item { display: inline-flex; align-items: center; gap: 0.55rem; }
+  .breaking-strip .item::before {
+    content:'▸'; color: var(--red-2); font-size: 0.62rem;
+  }
+  .breaking-strip .item .ts { color: var(--text-4); font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; }
+
+  /* ═══════════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════════ */
+  .hero {
+    position: relative; z-index: 1;
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 4rem 2rem 5rem;
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 3rem;
+    align-items: center;
+    min-height: calc(100vh - 200px);
+  }
+  @media (max-width: 1100px) {
+    .hero { grid-template-columns: 1fr; padding-top: 3rem; gap: 4rem; min-height: auto; }
+  }
+  .hero-chip {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--green-2);
+    padding: 0.45rem 0.95rem;
+    border: 1px solid rgba(110,231,183,0.3);
+    border-radius: 100px;
+    background: rgba(16,185,129,0.06);
+    backdrop-filter: blur(8px);
+    margin-bottom: 1.7rem;
+  }
+  .hero-chip .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.6rem, 7vw, 5.6rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+    margin-bottom: 1.4rem;
+    color: var(--text-1);
+  }
+  .hero h1 .accent {
+    background: linear-gradient(135deg, var(--green-2) 0%, var(--green) 50%, var(--cyan) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    display: inline-block;
+  }
+  .hero h1 .accent::after {
+    content:''; position: absolute; left: -8%; right: -8%; top: 0; bottom: 0;
+    background: radial-gradient(ellipse, rgba(16,185,129,0.5), transparent 70%);
+    filter: blur(40px);
+    z-index: -1;
+    animation: keywordBreath 3.5s ease-in-out infinite;
+  }
+  @keyframes keywordBreath {
+    0%, 100% { opacity: 0.42; }
+    50%      { opacity: 0.95; }
+  }
+  .hero-sub {
+    color: var(--text-2);
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    max-width: 540px;
+    line-height: 1.65;
+    margin-bottom: 2rem;
+  }
+  .hero-sub b { color: var(--text-1); font-weight: 600; }
+
+  .hero-ctas {
+    display: flex; flex-wrap: wrap;
+    gap: 0.7rem; margin-bottom: 2rem;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.95rem 1.6rem;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem; font-weight: 600;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), background 0.3s var(--ease), border-color 0.3s var(--ease), filter 0.3s var(--ease);
+    cursor: pointer; border: 1px solid transparent;
+    position: relative; overflow: hidden;
+  }
+  .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%);
+    color: #fff;
+    border-color: rgba(110,231,183,0.5);
+    box-shadow: 0 14px 34px rgba(16,185,129,0.4), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .btn-primary::after {
+    content:''; position:absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.22), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.7s var(--ease);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 22px 50px rgba(16,185,129,0.55); }
+  .btn-primary:hover::after { left: 130%; }
+  .btn-secondary {
+    background: rgba(255,255,255,0.04);
+    color: var(--text-1);
+    border-color: rgba(110,231,183,0.28);
+    backdrop-filter: blur(10px);
+  }
+  .btn-secondary:hover { background: rgba(16,185,129,0.1); border-color: rgba(110,231,183,0.5); transform: translateY(-2px); }
+
+  /* Hero meta row */
+  .hero-meta {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    padding-top: 1.4rem;
+    border-top: 1px dashed rgba(110,231,183,0.14);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.66rem;
+    color: var(--text-3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .hero-meta span { display: inline-flex; align-items: center; gap: 5px; }
+  .hero-meta b { color: var(--green-2); font-weight: 700; }
+  .hero-meta .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 5px var(--green);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+
+  /* ═══════════════════════════════════════════
+     HERO STAGE — Trading terminal mockup
+  ═══════════════════════════════════════════ */
+  .hero-stage {
+    position: relative;
+    width: 100%;
+    perspective: 2400px;
+    perspective-origin: 50% 35%;
+  }
+  .hero-stage::before {
+    content: ''; position: absolute;
+    left: -10%; right: -10%; top: 20%; bottom: -20%;
+    background:
+      radial-gradient(ellipse 60% 60% at 50% 50%, rgba(16,185,129,0.45), transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 50%, rgba(34,211,238,0.25), transparent 65%);
+    filter: blur(55px); z-index: -1;
+    pointer-events: none;
+    animation: stageGlow 6s ease-in-out infinite alternate;
+  }
+  @keyframes stageGlow {
+    from { opacity: 0.7; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1.05); }
+  }
+
+  .terminal {
+    position: relative;
+    background: linear-gradient(180deg, rgba(8,18,16,0.94), rgba(3,8,10,0.97));
+    border: 1px solid rgba(110,231,183,0.28);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 50px 110px rgba(0,0,0,0.7),
+      0 0 80px rgba(16,185,129,0.28);
+    backdrop-filter: blur(14px);
+    transform: rotateY(-6deg) rotateX(2deg);
+    transform-style: preserve-3d;
+  }
+  .terminal::before {
+    content:''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(110,231,183,0.18), transparent 35%, transparent 65%, rgba(34,211,238,0.14));
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .term-bar {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 0.85rem;
+    border-bottom: 1px solid rgba(110,231,183,0.14);
+    background: rgba(0,0,0,0.35);
+  }
+  .term-dots { display: flex; gap: 6px; }
+  .term-dot { width: 9px; height: 9px; border-radius: 50%; }
+  .term-dot.r { background: #FF5F57; }
+  .term-dot.y { background: #FEBC2E; }
+  .term-dot.g { background: #28C840; }
+  .term-title {
+    flex: 1; text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; color: var(--text-3);
+    letter-spacing: 0.06em;
+  }
+  .term-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--green-2);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .term-status::before {
+    content:''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 5px var(--green);
+    animation: livePulse 1.4s ease-in-out infinite;
+  }
+
+  /* Watchlist top row */
+  .term-watchlist {
+    display: flex; gap: 0;
+    border-bottom: 1px solid rgba(110,231,183,0.1);
+    background: rgba(0,0,0,0.22);
+    padding: 0.6rem 0.85rem;
+    gap: 1.4rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .term-watchlist::-webkit-scrollbar { display: none; }
+  .wlc {
+    display: flex; flex-direction: column;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.15;
+  }
+  .wlc .sym { font-size: 0.62rem; font-weight: 700; color: var(--text-2); letter-spacing: 0.04em; }
+  .wlc .px { font-size: 0.72rem; font-weight: 700; color: var(--text-1); margin-top: 2px; }
+  .wlc .chg { font-size: 0.58rem; font-weight: 700; margin-top: 1px; }
+  .wlc .chg.up { color: var(--green-2); }
+  .wlc .chg.down { color: var(--red-2); }
+
+  /* Chart panel */
+  .term-body {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    min-height: 320px;
+  }
+  @media (max-width: 700px) { .term-body { grid-template-columns: 1fr; } }
+
+  .chart-panel {
+    padding: 0.85rem;
+    border-right: 1px solid rgba(110,231,183,0.08);
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  @media (max-width: 700px) { .chart-panel { border-right: none; border-bottom: 1px solid rgba(110,231,183,0.08); } }
+  .chart-h {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 0.7rem;
+  }
+  .chart-h .left { display: flex; flex-direction: column; }
+  .chart-h .symbol {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem; font-weight: 800;
+    color: var(--text-1);
+    letter-spacing: 0.02em;
+  }
+  .chart-h .name { font-size: 0.58rem; color: var(--text-3); margin-top: 2px; }
+  .chart-h .right { text-align: right; }
+  .chart-h .price {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem; font-weight: 800;
+    color: var(--text-1);
+    line-height: 1;
+  }
+  .chart-h .change {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; font-weight: 700;
+    color: var(--green-2);
+    margin-top: 4px;
+  }
+  .chart-wrap {
+    flex: 1; min-height: 0;
+    position: relative;
+    border-radius: 8px;
+    background: linear-gradient(180deg, transparent, rgba(16,185,129,0.06));
+  }
+  .chart-svg { width: 100%; height: 100%; display: block; }
+  /* Chart axis lines */
+  .chart-grid line { stroke: rgba(110,231,183,0.08); stroke-width: 0.3; stroke-dasharray: 2 4; }
+  /* Animated chart line */
+  .chart-line {
+    fill: none;
+    stroke: url(#chart-grad);
+    stroke-width: 1.5;
+    filter: drop-shadow(0 0 4px rgba(16,185,129,0.7));
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: chartDraw 2.5s ease-out forwards, chartPulse 4s ease-in-out 2.5s infinite;
+  }
+  @keyframes chartDraw { to { stroke-dashoffset: 0; } }
+  @keyframes chartPulse {
+    0%, 100% { filter: drop-shadow(0 0 4px rgba(16,185,129,0.6)); }
+    50%      { filter: drop-shadow(0 0 10px rgba(16,185,129,0.95)); }
+  }
+  .chart-area { fill: url(#chart-area-grad); opacity: 0.5; }
+  /* Live dot at end of line */
+  .chart-live {
+    fill: var(--green-2);
+    filter: drop-shadow(0 0 6px var(--green-2));
+    animation: livePulse 1.4s ease-in-out infinite;
+  }
+  /* Time labels */
+  .chart-time-labels {
+    display: flex; justify-content: space-between;
+    margin-top: 0.55rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.5rem;
+    color: var(--text-4);
+    letter-spacing: 0.04em;
+  }
+  /* Volume bars */
+  .chart-vol { fill: rgba(110,231,183,0.22); }
+  .chart-vol-up { fill: rgba(110,231,183,0.45); }
+
+  /* Right panel — signals */
+  .signals-panel {
+    padding: 0.85rem;
+    display: flex; flex-direction: column;
+    gap: 0.55rem;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .sp-h {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(110,231,183,0.08);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.66rem; font-weight: 700;
+    color: var(--text-1);
+    letter-spacing: 0.04em;
+  }
+  .sp-h .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--green-2);
+    background: rgba(16,185,129,0.14);
+    border: 1px solid rgba(110,231,183,0.32);
+    padding: 1px 6px;
+    border-radius: 100px;
+  }
+  .sig {
+    padding: 0.55rem 0.65rem;
+    border-radius: 8px;
+    background: rgba(8,18,16,0.6);
+    border: 1px solid rgba(110,231,183,0.16);
+    font-family: 'Inter', sans-serif;
+  }
+  .sig.high {
+    background: rgba(239,68,68,0.1);
+    border-color: rgba(239,68,68,0.38);
+    box-shadow: 0 0 12px rgba(239,68,68,0.2);
+    animation: alertPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes alertPulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(239,68,68,0.18); }
+    50%      { box-shadow: 0 0 20px rgba(239,68,68,0.42); }
+  }
+  .sig-row { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+  .sig-row .sym {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.62rem; font-weight: 800;
+    color: var(--text-1);
+    letter-spacing: 0.02em;
+  }
+  .sig-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.46rem; font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 100px;
+    letter-spacing: 0.06em;
+  }
+  .sig-pill.high { background: rgba(239,68,68,0.18); color: var(--red-2); border: 1px solid rgba(239,68,68,0.35); }
+  .sig-pill.med  { background: rgba(251,191,36,0.16); color: var(--amber); border: 1px solid rgba(251,191,36,0.32); }
+  .sig-pill.low  { background: rgba(16,185,129,0.14); color: var(--green-2); border: 1px solid rgba(110,231,183,0.3); }
+  .sig-action {
+    font-size: 0.58rem;
+    color: var(--text-2);
+    margin-top: 3px;
+    line-height: 1.35;
+  }
+  .sig-meta {
+    display: flex; justify-content: space-between;
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.5rem;
+    color: var(--text-4);
+  }
+
+  /* Floating insight cards over the terminal */
+  .insight {
+    position: absolute;
+    background: rgba(8,18,16,0.92);
+    border: 1px solid rgba(110,231,183,0.4);
+    border-radius: 10px;
+    padding: 0.55rem 0.7rem;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.55), 0 0 25px rgba(16,185,129,0.25);
+    z-index: 3;
+    pointer-events: none;
+    animation: insightFloat 5s ease-in-out infinite alternate;
+  }
+  .insight::before {
+    content:''; position: absolute; top: -1px; left: 12%; right: 12%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green-2), transparent);
+    box-shadow: 0 0 8px var(--green-2);
+  }
+  @keyframes insightFloat {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-6px); }
+  }
+  .insight.left {
+    left: -8%; top: 18%;
+    animation-delay: 0s;
+  }
+  .insight.right {
+    right: -6%; bottom: 22%;
+    animation-delay: 2s;
+  }
+  .insight .ai-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.5rem; font-weight: 700;
+    color: var(--cyan-2);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+  }
+  .insight .ai-tag::before {
+    content:''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--cyan-2); box-shadow: 0 0 5px var(--cyan-2);
+    animation: livePulse 1.2s ease-in-out infinite;
+  }
+  .insight .copy {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.62rem; font-weight: 700;
+    color: var(--text-1);
+    line-height: 1.25;
+    max-width: 150px;
+  }
+  .insight .copy em {
+    font-style: normal;
+    color: var(--green-2);
+  }
+  @media (max-width: 1100px) { .insight { display: none; } }
+
+  /* ═══════════════════════════════════════════
+     SECTION FRAMING
+  ═══════════════════════════════════════════ */
+  .sec {
+    position: relative; z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 5.5rem 2rem;
+  }
+  .sec::before {
+    content:''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 70%; height: 1px;
+    background: linear-gradient(90deg, transparent 5%, rgba(110,231,183,0.32) 50%, transparent 95%);
+  }
+  .sec-marker {
+    display: flex; align-items: center; gap: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; font-weight: 600;
+    color: var(--green-2);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+  .sec-marker::before {
+    content:''; width: 32px; height: 1px;
+    background: linear-gradient(90deg, var(--green-2), transparent);
+  }
+  .sec-marker .code { color: var(--text-3); font-weight: 500; }
+  .sec-head {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 3.5rem;
+  }
+  .sec-head .sec-marker { justify-content: center; }
+  .sec-head .sec-marker::before { display: none; }
+  .sec-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 4.4vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+    color: var(--text-1);
+  }
+  .sec-title .accent {
+    background: linear-gradient(135deg, var(--green-2), var(--cyan));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .sec-lede {
+    font-size: 1.05rem;
+    color: var(--text-2);
+    line-height: 1.65;
+  }
+
+  /* ═══════════════════════════════════════════
+     LIVE SIGNALS GRID
+  ═══════════════════════════════════════════ */
+  .signals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+  }
+  @media (max-width: 880px) { .signals-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 580px) { .signals-grid { grid-template-columns: 1fr; } }
+  .sig-card {
+    background: var(--card);
+    border: 1px solid rgba(110,231,183,0.15);
+    border-radius: var(--r-lg);
+    padding: 1.3rem 1.2rem;
+    backdrop-filter: blur(14px);
+    transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    position: relative;
+    overflow: hidden;
+  }
+  .sig-card::before {
+    content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(110,231,183,0.5), transparent);
+  }
+  .sig-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(110,231,183,0.35);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 60px rgba(16,185,129,0.2);
+  }
+  .sig-card.featured {
+    background: linear-gradient(180deg, rgba(239,68,68,0.08), rgba(8,18,16,0.85));
+    border-color: rgba(239,68,68,0.4);
+    box-shadow: 0 0 25px rgba(239,68,68,0.18);
+    animation: alertPulse 2.4s ease-in-out infinite;
+  }
+  .sig-card-h {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.8rem;
+  }
+  .sig-card .symbol {
+    display: flex; align-items: center; gap: 0.45rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem; font-weight: 800;
+  }
+  .sig-card .symbol .icon {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .sig-card .symbol .icon.btc   { background: #f7931a; color: #fff; }
+  .sig-card .symbol .icon.aapl  { background: linear-gradient(135deg,#1f2937,#6b7280); color: #fff; }
+  .sig-card .symbol .icon.tsla  { background: #cc0000; color: #fff; }
+  .sig-card .symbol .icon.nvda  { background: #76b900; color: #000; }
+  .sig-card .symbol .icon.eth   { background: #627eea; color: #fff; }
+  .sig-card .symbol .icon.gold  { background: linear-gradient(135deg,#fde68a,#92400e); color: #1a0a02; }
+  .sig-card .conf {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem; font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 100px;
+    background: rgba(110,231,183,0.14);
+    color: var(--green-2);
+    border: 1px solid rgba(110,231,183,0.3);
+    letter-spacing: 0.04em;
+  }
+  .sig-card .conf.high  { background: rgba(239,68,68,0.16); color: var(--red-2); border-color: rgba(239,68,68,0.35); }
+  .sig-card .conf.med   { background: rgba(251,191,36,0.14); color: var(--amber); border-color: rgba(251,191,36,0.3); }
+
+  .sig-action-row {
+    display: flex; align-items: baseline; gap: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+  .sig-action-row .verb {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.05rem; font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+  .sig-action-row .verb.buy  { color: var(--green-2); }
+  .sig-action-row .verb.sell { color: var(--red-2); }
+  .sig-action-row .verb.hold { color: var(--amber); }
+  .sig-action-row .target {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-1);
+    font-weight: 700;
+  }
+  .sig-action-row .delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; font-weight: 700;
+    margin-left: auto;
+  }
+  .sig-action-row .delta.up { color: var(--green-2); }
+  .sig-action-row .delta.down { color: var(--red-2); }
+
+  .sig-thesis {
+    color: var(--text-2);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    margin-bottom: 0.85rem;
+  }
+  .sig-mini-chart {
+    margin-bottom: 0.85rem;
+    height: 40px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .sig-mini-chart svg { width: 100%; height: 100%; display: block; }
+  .sig-meta-row {
+    display: flex; justify-content: space-between;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(110,231,183,0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-3);
+    letter-spacing: 0.04em;
+  }
+  .sig-meta-row .ago { display: inline-flex; align-items: center; gap: 4px; }
+  .sig-meta-row .ago::before {
+    content:''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 5px var(--green);
+    animation: livePulse 1.4s ease-in-out infinite;
+  }
+
+  /* ═══════════════════════════════════════════
+     HOW IT WORKS PIPELINE
+  ═══════════════════════════════════════════ */
+  .pipeline-wrap {
+    position: relative;
+    aspect-ratio: 4 / 1;
+    min-height: 260px;
+  }
+  @media (max-width: 1000px) { .pipeline-wrap { aspect-ratio: auto; min-height: auto; } }
+  .pipeline-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  @media (max-width: 1000px) { .pipeline-svg { display: none; } }
+  .pp-track { stroke: rgba(110,231,183,0.22); stroke-width: 1; fill: none; }
+  .pp-flow {
+    stroke: url(#pp-flow-grad);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 8 200;
+    animation: ppFlow 4s linear infinite;
+    filter: drop-shadow(0 0 4px rgba(110,231,183,0.7));
+  }
+  @keyframes ppFlow {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -416; }
+  }
+  .pp-particle { fill: var(--green-2); filter: drop-shadow(0 0 6px var(--green-2)); }
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: start;
+    position: relative;
+    z-index: 2;
+    height: 100%;
+  }
+  @media (max-width: 1000px) { .pipeline { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; } }
+  @media (max-width: 580px) { .pipeline { grid-template-columns: 1fr; } }
+  .step {
+    text-align: center;
+    padding: 0 0.5rem;
+    align-self: center;
+  }
+  .step-node {
+    width: 84px; height: 84px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16,185,129,0.32), rgba(3,8,10,0.95) 70%);
+    border: 1px solid rgba(110,231,183,0.4);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--green-2);
+    position: relative;
+    box-shadow: inset 0 0 18px rgba(16,185,129,0.2), 0 0 28px rgba(16,185,129,0.35);
+    animation: nodeBreath 3.5s ease-in-out infinite;
+  }
+  @keyframes nodeBreath {
+    0%, 100% { box-shadow: inset 0 0 18px rgba(16,185,129,0.2), 0 0 24px rgba(16,185,129,0.3); }
+    50%      { box-shadow: inset 0 0 22px rgba(16,185,129,0.32), 0 0 38px rgba(16,185,129,0.6); }
+  }
+  .step-node svg { width: 26px; height: 26px; }
+  .step-num {
+    position: absolute;
+    bottom: -2px; right: 14%;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--green), var(--green-deep));
+    border: 2px solid var(--bg-0);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 0.66rem;
+    box-shadow: 0 4px 12px rgba(16,185,129,0.55);
+  }
+  .step h4 {
+    margin-top: 1.4rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    color: var(--text-1);
+    margin-bottom: 0.4rem;
+  }
+  .step p {
+    color: var(--text-2);
+    font-size: 0.84rem;
+    line-height: 1.55;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  /* ═══════════════════════════════════════════
+     FEATURES
+  ═══════════════════════════════════════════ */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+  }
+  @media (max-width: 880px) { .features { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .features { grid-template-columns: 1fr; } }
+  .feat {
+    background: var(--card);
+    border: 1px solid rgba(110,231,183,0.13);
+    border-radius: var(--r-lg);
+    padding: 1.4rem 1.3rem;
+    backdrop-filter: blur(14px);
+    transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    position: relative;
+    overflow: hidden;
+  }
+  .feat::before {
+    content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(110,231,183,0.45), transparent);
+    opacity: 0.5;
+  }
+  .feat:hover {
+    transform: translateY(-3px);
+    border-color: rgba(110,231,183,0.34);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 60px rgba(16,185,129,0.18);
+  }
+  .feat-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+  .feat-icon {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.22), rgba(16,185,129,0.04));
+    border: 1px solid rgba(110,231,183,0.32);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--green-2);
+    box-shadow: inset 0 0 12px rgba(16,185,129,0.18);
+  }
+  .feat-icon svg { width: 20px; height: 20px; }
+  .feat-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; font-weight: 600;
+    color: var(--text-4);
+    letter-spacing: 0.12em;
+  }
+  .feat h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-1);
+  }
+  .feat p {
+    color: var(--text-2);
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  /* ═══════════════════════════════════════════
+     CTA STRIP
+  ═══════════════════════════════════════════ */
+  .cta-strip {
+    max-width: 1100px;
+    margin: 5rem auto;
+    padding: 4rem 2rem;
+    background:
+      radial-gradient(ellipse at 0% 50%, rgba(16,185,129,0.22), transparent 55%),
+      radial-gradient(ellipse at 100% 50%, rgba(34,211,238,0.15), transparent 55%),
+      linear-gradient(180deg, rgba(10,26,22,0.7), rgba(3,8,10,0.85));
+    border: 1px solid rgba(110,231,183,0.25);
+    border-radius: var(--r-2xl);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(22px);
+  }
+  .cta-strip::before {
+    content:''; position:absolute; inset:-1px;
+    border-radius: calc(var(--r-2xl) + 1px);
+    padding: 1px; pointer-events: none;
+    background: linear-gradient(135deg, rgba(110,231,183,0.5), transparent 50%, rgba(34,211,238,0.4));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+  }
+  .cta-strip h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 0.7rem;
+    letter-spacing: -0.025em;
+  }
+  .cta-strip h2 .accent {
+    background: linear-gradient(135deg, var(--green-2), var(--cyan));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cta-strip p { color: var(--text-2); font-size: 1rem; max-width: 540px; margin: 0 auto 1.8rem; }
+  .cta-strip .hero-ctas { justify-content: center; margin-bottom: 0; }
+
+  /* ═══════════════════════════════════════════
+     FOOTER
+  ═══════════════════════════════════════════ */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--line-2);
+    padding: 3.5rem 2rem 1.8rem;
+    margin-top: 2rem;
+    background: rgba(3,8,10,0.5);
+  }
+  footer::before {
+    content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(110,231,183,0.4) 50%, transparent);
+  }
+  .foot-main {
+    max-width: 1280px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.4fr 0.85fr 0.85fr 0.85fr 0.85fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  @media (max-width: 880px) { .foot-main { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+  @media (max-width: 540px) { .foot-main { grid-template-columns: 1fr; } }
+  .foot-brand {
+    display: inline-flex; align-items: center; gap: 0.65rem;
+    color: var(--text-1);
+    margin-bottom: 1rem;
+  }
+  .foot-brand .logo {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--green), var(--green-deep));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 12px rgba(16,185,129,0.4);
+  }
+  .foot-brand .logo svg { width: 18px; height: 18px; color: #03110A; }
+  .foot-brand .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800; font-size: 1rem;
+  }
+  .foot-brand .name em { font-style: normal; color: var(--green-2); }
+  .foot-tagline { color: var(--text-3); font-size: 0.78rem; line-height: 1.55; max-width: 240px; }
+  .foot-col h5 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem; font-weight: 700;
+    color: var(--text-1);
+    margin-bottom: 0.95rem;
+    letter-spacing: 0.04em;
+  }
+  .foot-col ul { list-style: none; }
+  .foot-col li { margin-bottom: 0.6rem; }
+  .foot-col a {
+    color: var(--text-3);
+    font-size: 0.8rem;
+    transition: color 0.25s;
+  }
+  .foot-col a:hover { color: var(--text-1); }
+  .foot-bottom {
+    max-width: 1280px; margin: 0 auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line-2);
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .foot-credit {
+    color: var(--text-4);
+    font-size: 0.74rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .foot-credit a { color: var(--text-3); }
+  .foot-credit a:hover { color: var(--text-2); }
+  .foot-bottom-links { display: flex; gap: 1.4rem; }
+  .foot-bottom-links a {
+    color: var(--text-3);
+    font-size: 0.78rem;
+    transition: color 0.25s;
+  }
+  .foot-bottom-links a:hover { color: var(--text-1); }
+  .foot-social { display: flex; gap: 0.7rem; }
+  .foot-social a {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--text-2);
+    transition: all 0.25s;
+  }
+  .foot-social a:hover {
+    background: rgba(16,185,129,0.12);
+    border-color: rgba(110,231,183,0.4);
+    color: var(--green-2);
+    transform: translateY(-2px);
+  }
+  .foot-social svg { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <linearGradient id="chart-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#6EE7B7"/>
+      <stop offset="100%" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="chart-area-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="pp-flow-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6EE7B7"/>
+      <stop offset="50%" stop-color="#22D3EE"/>
+      <stop offset="100%" stop-color="#6EE7B7"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="bg-base"></div>
+<div class="bg-grid"></div>
+<div class="bg-vignette"></div>
+<div class="bg-scan"></div>
+
+<div class="hud tl"></div><div class="hud tr"></div><div class="hud bl"></div><div class="hud br"></div>
+
+<!-- ═══ TOP TICKER BAR ═══ -->
+<div class="ticker-bar">
+  <span class="ticker-label"><span class="dot"></span>LIVE</span>
+  <div class="ticker-track">
+    <div class="ticker-strip" id="ticker-strip">
+      <span class="tk"><span class="sym">AAPL</span><span class="price">$232.45</span><span class="chg up">▲ 1.84%</span></span>
+      <span class="tk"><span class="sym">MSFT</span><span class="price">$418.20</span><span class="chg up">▲ 0.62%</span></span>
+      <span class="tk"><span class="sym">NVDA</span><span class="price">$135.67</span><span class="chg up">▲ 3.42%</span></span>
+      <span class="tk"><span class="sym">TSLA</span><span class="price">$248.91</span><span class="chg down">▼ 1.18%</span></span>
+      <span class="tk"><span class="sym">META</span><span class="price">$582.10</span><span class="chg up">▲ 0.94%</span></span>
+      <span class="tk"><span class="sym">GOOGL</span><span class="price">$172.84</span><span class="chg up">▲ 1.05%</span></span>
+      <span class="tk"><span class="sym">AMZN</span><span class="price">$201.43</span><span class="chg up">▲ 0.71%</span></span>
+      <span class="tk"><span class="sym">BTC</span><span class="price">$82,341</span><span class="chg up">▲ 2.47%</span></span>
+      <span class="tk"><span class="sym">ETH</span><span class="price">$3,124</span><span class="chg up">▲ 1.83%</span></span>
+      <span class="tk"><span class="sym">SOL</span><span class="price">$184.50</span><span class="chg down">▼ 0.42%</span></span>
+      <span class="tk"><span class="sym">XAU</span><span class="price">$2,684</span><span class="chg up">▲ 0.35%</span></span>
+      <span class="tk"><span class="sym">EUR/USD</span><span class="price">1.0842</span><span class="chg down">▼ 0.18%</span></span>
+      <!-- Duplicate for seamless loop -->
+      <span class="tk"><span class="sym">AAPL</span><span class="price">$232.45</span><span class="chg up">▲ 1.84%</span></span>
+      <span class="tk"><span class="sym">MSFT</span><span class="price">$418.20</span><span class="chg up">▲ 0.62%</span></span>
+      <span class="tk"><span class="sym">NVDA</span><span class="price">$135.67</span><span class="chg up">▲ 3.42%</span></span>
+      <span class="tk"><span class="sym">TSLA</span><span class="price">$248.91</span><span class="chg down">▼ 1.18%</span></span>
+      <span class="tk"><span class="sym">META</span><span class="price">$582.10</span><span class="chg up">▲ 0.94%</span></span>
+      <span class="tk"><span class="sym">GOOGL</span><span class="price">$172.84</span><span class="chg up">▲ 1.05%</span></span>
+      <span class="tk"><span class="sym">AMZN</span><span class="price">$201.43</span><span class="chg up">▲ 0.71%</span></span>
+      <span class="tk"><span class="sym">BTC</span><span class="price">$82,341</span><span class="chg up">▲ 2.47%</span></span>
+      <span class="tk"><span class="sym">ETH</span><span class="price">$3,124</span><span class="chg up">▲ 1.83%</span></span>
+      <span class="tk"><span class="sym">SOL</span><span class="price">$184.50</span><span class="chg down">▼ 0.42%</span></span>
+      <span class="tk"><span class="sym">XAU</span><span class="price">$2,684</span><span class="chg up">▲ 0.35%</span></span>
+      <span class="tk"><span class="sym">EUR/USD</span><span class="price">1.0842</span><span class="chg down">▼ 0.18%</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 17l6-6 4 4 8-8"/>
+          <path d="M14 7h7v7"/>
+        </svg>
+      </span>
+      <span class="nav-text">
+        <span class="name">Signal<em>News</em></span>
+        <span class="tag">News Worth Money</span>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="#signals">Signals</a>
+      <a href="#how">How it Works</a>
+      <a href="#markets">Markets</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#docs">Docs</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-status"><span class="dot"></span>MARKETS OPEN</span>
+      <a href="#signin" class="nav-signin">Sign In</a>
+      <a href="#start" class="nav-cta">
+        Get Signals
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ BREAKING NEWS STRIP ═══ -->
+<div class="breaking">
+  <span class="breaking-label"><span class="dot"></span>BREAKING</span>
+  <div class="breaking-track">
+    <div class="breaking-strip">
+      <span class="item"><span class="ts">14:38</span>Fed signals dovish pivot as core PCE softens to 2.4%</span>
+      <span class="item"><span class="ts">14:32</span>NVDA upgraded to $180 PT at Morgan Stanley — AI capex thesis intact</span>
+      <span class="item"><span class="ts">14:24</span>BTC reclaims $82K on spot ETF inflows; institutional bid returns</span>
+      <span class="item"><span class="ts">14:18</span>TSMC reports record quarterly revenue, AI accelerator demand "unprecedented"</span>
+      <span class="item"><span class="ts">14:11</span>OPEC+ extends production cuts through Q2; crude pops 1.4%</span>
+      <span class="item"><span class="ts">14:03</span>Apple iPhone 17 lineup leak: AI co-processor confirmed, mass production starts June</span>
+      <!-- Loop -->
+      <span class="item"><span class="ts">14:38</span>Fed signals dovish pivot as core PCE softens to 2.4%</span>
+      <span class="item"><span class="ts">14:32</span>NVDA upgraded to $180 PT at Morgan Stanley — AI capex thesis intact</span>
+      <span class="item"><span class="ts">14:24</span>BTC reclaims $82K on spot ETF inflows; institutional bid returns</span>
+      <span class="item"><span class="ts">14:18</span>TSMC reports record quarterly revenue, AI accelerator demand "unprecedented"</span>
+      <span class="item"><span class="ts">14:11</span>OPEC+ extends production cuts through Q2; crude pops 1.4%</span>
+      <span class="item"><span class="ts">14:03</span>Apple iPhone 17 lineup leak: AI co-processor confirmed, mass production starts June</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-chip"><span class="dot"></span>AI-CURATED MARKET INTELLIGENCE</div>
+    <h1>
+      News worth<br>
+      <span class="accent">money.</span>
+    </h1>
+    <p class="hero-sub">AI-curated financial signals built for operators. <b>Real-time tickers, live news, and trade-grade analysis</b> — the same edge institutional desks pay $24K/yr for, in your pocket.</p>
+    <div class="hero-ctas">
+      <a href="#start" class="btn btn-primary">
+        Start Free for 14 Days
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#demo" class="btn btn-secondary">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        See Live Signals
+      </a>
+    </div>
+    <div class="hero-meta">
+      <span><span class="live-dot"></span>SIGNALS <b>147 today</b></span>
+      <span>HIT RATE <b>71%</b></span>
+      <span>AVG R/R <b>2.4×</b></span>
+      <span>LATENCY <b>&lt;200ms</b></span>
+    </div>
+  </div>
+
+  <!-- Hero stage: Terminal with chart + signals -->
+  <div class="hero-stage">
+    <div class="insight left">
+      <div class="ai-tag">AI · 6s ago</div>
+      <div class="copy"><em>Bullish flag</em> forming on NVDA 4H — $138 target</div>
+    </div>
+    <div class="insight right">
+      <div class="ai-tag">SENTIMENT</div>
+      <div class="copy">Crypto fear &amp; greed <em>76 · Greed</em></div>
+    </div>
+
+    <div class="terminal">
+      <div class="term-bar">
+        <div class="term-dots"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div>
+        <div class="term-title">signalnews.terminal · live</div>
+        <div class="term-status">RELAY 142ms</div>
+      </div>
+
+      <!-- Watchlist row -->
+      <div class="term-watchlist">
+        <div class="wlc"><div class="sym">AAPL</div><div class="px">232.45</div><div class="chg up">+1.84%</div></div>
+        <div class="wlc"><div class="sym">NVDA</div><div class="px">135.67</div><div class="chg up">+3.42%</div></div>
+        <div class="wlc"><div class="sym">MSFT</div><div class="px">418.20</div><div class="chg up">+0.62%</div></div>
+        <div class="wlc"><div class="sym">TSLA</div><div class="px">248.91</div><div class="chg down">-1.18%</div></div>
+        <div class="wlc"><div class="sym">BTC</div><div class="px">82,341</div><div class="chg up">+2.47%</div></div>
+        <div class="wlc"><div class="sym">ETH</div><div class="px">3,124</div><div class="chg up">+1.83%</div></div>
+        <div class="wlc"><div class="sym">XAU</div><div class="px">2,684</div><div class="chg up">+0.35%</div></div>
+      </div>
+
+      <div class="term-body">
+        <div class="chart-panel">
+          <div class="chart-h">
+            <div class="left">
+              <div class="symbol">NVDA · NASDAQ</div>
+              <div class="name">NVIDIA Corp · 1H</div>
+            </div>
+            <div class="right">
+              <div class="price">$135.67</div>
+              <div class="change">▲ +$4.49 (+3.42%)</div>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <svg class="chart-svg" viewBox="0 0 400 160" preserveAspectRatio="none">
+              <!-- Grid -->
+              <g class="chart-grid">
+                <line x1="0" y1="40" x2="400" y2="40"/>
+                <line x1="0" y1="80" x2="400" y2="80"/>
+                <line x1="0" y1="120" x2="400" y2="120"/>
+              </g>
+              <!-- Area fill -->
+              <path class="chart-area" d="M 0,128 L 12,124 24,130 36,118 48,122 60,110 72,114 84,98 96,108 108,92 120,96 132,86 144,90 156,72 168,82 180,68 192,76 204,58 216,66 228,48 240,56 252,42 264,52 276,38 288,46 300,32 312,42 324,28 336,38 348,24 360,32 372,20 384,28 400,18 L 400,160 L 0,160 Z"/>
+              <!-- Main line -->
+              <path class="chart-line" d="M 0,128 L 12,124 24,130 36,118 48,122 60,110 72,114 84,98 96,108 108,92 120,96 132,86 144,90 156,72 168,82 180,68 192,76 204,58 216,66 228,48 240,56 252,42 264,52 276,38 288,46 300,32 312,42 324,28 336,38 348,24 360,32 372,20 384,28 400,18"/>
+              <!-- Live dot -->
+              <circle class="chart-live" cx="400" cy="18" r="3.5"/>
+            </svg>
+          </div>
+          <div class="chart-time-labels">
+            <span>09:30</span><span>11:00</span><span>12:30</span><span>14:00</span><span>NOW</span>
+          </div>
+        </div>
+
+        <div class="signals-panel">
+          <div class="sp-h">
+            <span>Active Signals</span>
+            <span class="count">8 · Live</span>
+          </div>
+          <div class="sig high">
+            <div class="sig-row">
+              <span class="sym">NVDA · BUY</span>
+              <span class="sig-pill high">HIGH</span>
+            </div>
+            <div class="sig-action">Target $145 · Stop $128 · 2.1×R</div>
+            <div class="sig-meta"><span>3m ago</span><span>71% hit</span></div>
+          </div>
+          <div class="sig">
+            <div class="sig-row">
+              <span class="sym">BTC · ACCUMULATE</span>
+              <span class="sig-pill med">MED</span>
+            </div>
+            <div class="sig-action">ETF inflow surge · Range $81–84K</div>
+            <div class="sig-meta"><span>12m ago</span><span>68% hit</span></div>
+          </div>
+          <div class="sig">
+            <div class="sig-row">
+              <span class="sym">TSLA · CAUTION</span>
+              <span class="sig-pill low">LOW</span>
+            </div>
+            <div class="sig-action">Delivery miss risk into earnings</div>
+            <div class="sig-meta"><span>28m ago</span><span>62% hit</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LIVE SIGNALS ═══ -->
+<section class="sec" id="signals">
+  <div class="sec-head">
+    <div class="sec-marker"><span class="code">01 / LIVE SIGNALS</span></div>
+    <h2 class="sec-title">AI signals. <span class="accent">Trader logic.</span></h2>
+    <p class="sec-lede">Every signal carries a thesis, a target, a stop, and a confidence band — graded by historical hit rate. The same logic that drives institutional desks, in plain English.</p>
+  </div>
+
+  <div class="signals-grid">
+    <div class="sig-card featured">
+      <div class="sig-card-h">
+        <span class="symbol"><span class="icon nvda">N</span>NVDA</span>
+        <span class="conf high">HIGH · 76%</span>
+      </div>
+      <div class="sig-action-row">
+        <span class="verb buy">BUY</span>
+        <span class="target">→ $145</span>
+        <span class="delta up">+6.9%</span>
+      </div>
+      <p class="sig-thesis">Bullish flag breakout on 4H. Volume confirmation + institutional bid above $134. Stop $128.</p>
+      <div class="sig-mini-chart">
+        <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+          <path d="M 0,32 L 20,28 40,30 60,24 80,20 100,22 120,16 140,12 160,8 180,10 200,4" stroke="#6EE7B7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M 0,32 L 20,28 40,30 60,24 80,20 100,22 120,16 140,12 160,8 180,10 200,4 L 200,40 L 0,40 Z" fill="rgba(110,231,183,0.18)"/>
+        </svg>
+      </div>
+      <div class="sig-meta-row">
+        <span class="ago">3m ago</span>
+        <span>NASDAQ · 1H</span>
+      </div>
+    </div>
+
+    <div class="sig-card">
+      <div class="sig-card-h">
+        <span class="symbol"><span class="icon btc">₿</span>BTC</span>
+        <span class="conf med">MED · 68%</span>
+      </div>
+      <div class="sig-action-row">
+        <span class="verb buy">ACCUMULATE</span>
+        <span class="target">$81–84K</span>
+        <span class="delta up">+3.1%</span>
+      </div>
+      <p class="sig-thesis">Spot ETF net inflows hit $487M. RSI cooling from overbought. Bullish structure intact above $79K.</p>
+      <div class="sig-mini-chart">
+        <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+          <path d="M 0,18 L 20,24 40,16 60,22 80,12 100,18 120,10 140,14 160,6 180,12 200,8" stroke="#6EE7B7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="sig-meta-row">
+        <span class="ago">12m ago</span>
+        <span>SPOT · 4H</span>
+      </div>
+    </div>
+
+    <div class="sig-card">
+      <div class="sig-card-h">
+        <span class="symbol"><span class="icon tsla">T</span>TSLA</span>
+        <span class="conf med">MED · 62%</span>
+      </div>
+      <div class="sig-action-row">
+        <span class="verb sell">REDUCE</span>
+        <span class="target">→ $235</span>
+        <span class="delta down">−5.6%</span>
+      </div>
+      <p class="sig-thesis">Q1 delivery miss tracking. Margin pressure from China discounts. Earnings April 23.</p>
+      <div class="sig-mini-chart">
+        <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+          <path d="M 0,10 L 20,14 40,12 60,18 80,16 100,22 120,20 140,26 160,24 180,30 200,32" stroke="#FCA5A5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="sig-meta-row">
+        <span class="ago">28m ago</span>
+        <span>NASDAQ · 1D</span>
+      </div>
+    </div>
+
+    <div class="sig-card">
+      <div class="sig-card-h">
+        <span class="symbol"><span class="icon aapl">A</span>AAPL</span>
+        <span class="conf">LOW · 58%</span>
+      </div>
+      <div class="sig-action-row">
+        <span class="verb hold">HOLD</span>
+        <span class="target">$230–245</span>
+        <span class="delta up">+0.4%</span>
+      </div>
+      <p class="sig-thesis">Range-bound ahead of WWDC. iPhone cycle upside not yet priced. Catalyst late June.</p>
+      <div class="sig-mini-chart">
+        <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+          <path d="M 0,20 L 20,18 40,22 60,16 80,24 100,18 120,22 140,20 160,18 180,20 200,18" stroke="#6EE7B7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="sig-meta-row">
+        <span class="ago">42m ago</span>
+        <span>NASDAQ · 1D</span>
+      </div>
+    </div>
+
+    <div class="sig-card">
+      <div class="sig-card-h">
+        <span class="symbol"><span class="icon gold">●</span>XAU</span>
+        <span class="conf med">MED · 65%</span>
+      </div>
+      <div class="sig-action-row">
+        <span class="verb buy">BUY</span>
+        <span class="target">→ $2,750</span>
+        <span class="delta up">+2.5%</span>
+      </div>
+      <p class="sig-thesis">Real yields falling, dollar weakening. Central bank buying continues. Safe-haven bid intact.</p>
+      <div class="sig-mini-chart">
+        <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+          <path d="M 0,24 L 20,22 40,18 60,20 80,16 100,18 120,12 140,16 160,10 180,12 200,6" stroke="#6EE7B7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="sig-meta-row">
+        <span class="ago">1h ago</span>
+        <span>SPOT · 1D</span>
+      </div>
+    </div>
+
+    <div class="sig-card">
+      <div class="sig-card-h">
+        <span class="symbol"><span class="icon eth">Ξ</span>ETH</span>
+        <span class="conf">LOW · 54%</span>
+      </div>
+      <div class="sig-action-row">
+        <span class="verb hold">WATCH</span>
+        <span class="target">$3,100</span>
+        <span class="delta up">+0.8%</span>
+      </div>
+      <p class="sig-thesis">L2 rollup adoption accelerating. ETH/BTC ratio near multi-year lows — mean reversion setup.</p>
+      <div class="sig-mini-chart">
+        <svg viewBox="0 0 200 40" preserveAspectRatio="none">
+          <path d="M 0,22 L 20,20 40,24 60,22 80,18 100,20 120,16 140,18 160,14 180,16 200,12" stroke="#6EE7B7" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="sig-meta-row">
+        <span class="ago">2h ago</span>
+        <span>SPOT · 4H</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="sec" id="how">
+  <div class="sec-head">
+    <div class="sec-marker"><span class="code">02 / WORKFLOW</span></div>
+    <h2 class="sec-title">From raw data to <span class="accent">actionable signal.</span></h2>
+    <p class="sec-lede">Four stages, fully automated. The same pipeline a hedge fund runs — without the $24K Bloomberg seat.</p>
+  </div>
+  <div class="pipeline-wrap">
+    <svg class="pipeline-svg" viewBox="0 0 1000 200" preserveAspectRatio="none">
+      <path class="pp-track" d="M 100 100 Q 233 60, 366 100 T 633 100 T 900 100"/>
+      <path class="pp-flow" d="M 100 100 Q 233 60, 366 100 T 633 100 T 900 100"/>
+      <circle class="pp-particle" r="4"><animateMotion dur="4s" repeatCount="indefinite" path="M 100 100 Q 233 60, 366 100 T 633 100 T 900 100"/></circle>
+      <circle class="pp-particle" r="3" opacity="0.7"><animateMotion dur="4s" begin="-1.3s" repeatCount="indefinite" path="M 100 100 Q 233 60, 366 100 T 633 100 T 900 100"/></circle>
+      <circle class="pp-particle" r="3" opacity="0.5"><animateMotion dur="4s" begin="-2.6s" repeatCount="indefinite" path="M 100 100 Q 233 60, 366 100 T 633 100 T 900 100"/></circle>
+    </svg>
+    <div class="pipeline">
+      <div class="step">
+        <div class="step-node">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+          <span class="step-num">1</span>
+        </div>
+        <h4>Ingest</h4>
+        <p>Tick-by-tick prices, filings, news wires, social sentiment — all streamed live.</p>
+      </div>
+      <div class="step">
+        <div class="step-node">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/></svg>
+          <span class="step-num">2</span>
+        </div>
+        <h4>Analyze</h4>
+        <p>AI cross-references technicals, fundamentals, and macro context in real time.</p>
+      </div>
+      <div class="step">
+        <div class="step-node">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg>
+          <span class="step-num">3</span>
+        </div>
+        <h4>Grade</h4>
+        <p>Each setup gets a confidence band, R/R ratio, and historical hit rate.</p>
+      </div>
+      <div class="step">
+        <div class="step-node">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span class="step-num">4</span>
+        </div>
+        <h4>Deliver</h4>
+        <p>Push notifications, email, or app feed — your signals before the candle closes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURES ═══ -->
+<section class="sec" id="features">
+  <div class="sec-head">
+    <div class="sec-marker"><span class="code">03 / CAPABILITIES</span></div>
+    <h2 class="sec-title">A trading desk. <span class="accent">In your pocket.</span></h2>
+    <p class="sec-lede">Every primitive a serious operator needs — wired together, AI-curated, mobile-first.</p>
+  </div>
+  <div class="features">
+    <div class="feat">
+      <div class="feat-row">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div>
+        <div class="feat-code mono">F-01</div>
+      </div>
+      <h4>Live signals</h4>
+      <p>Buy / sell / hold calls with targets and stops, graded by historical hit rate.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-row">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <div class="feat-code mono">F-02</div>
+      </div>
+      <h4>Smart watchlists</h4>
+      <p>Build, share, and auto-curate watchlists that learn from your patterns.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-row">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="feat-code mono">F-03</div>
+      </div>
+      <h4>AI news digest</h4>
+      <p>Real-time news, filtered for market impact. EN + AR, with sentiment scoring.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-row">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+        <div class="feat-code mono">F-04</div>
+      </div>
+      <h4>Push alerts</h4>
+      <p>Price targets, technical breakouts, earnings, news — straight to your lock screen.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-row">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+        <div class="feat-code mono">F-05</div>
+      </div>
+      <h4>Macro radar</h4>
+      <p>Fed, CPI, jobs, GDP — economic calendars with consensus vs prior, color-coded.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-row">
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <div class="feat-code mono">F-06</div>
+      </div>
+      <h4>Multi-screen</h4>
+      <p>Web, iOS, Android — your watchlists and signals sync across every device.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA STRIP ═══ -->
+<div class="cta-strip" id="start">
+  <h2>Stop trading on yesterday's news. <span class="accent">Get edge today.</span></h2>
+  <p>14-day free trial. No credit card. Cancel any time.</p>
+  <div class="hero-ctas">
+    <a href="https://signalnews.fzlabs.com" class="btn btn-primary" target="_blank" rel="noopener">
+      Open SignalNews
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#demo" class="btn btn-secondary">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      Watch Demo
+    </a>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="foot-main">
+    <div class="foot-brand-col">
+      <a href="/" class="foot-brand">
+        <span class="logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 17l6-6 4 4 8-8"/>
+            <path d="M14 7h7v7"/>
+          </svg>
+        </span>
+        <span class="name">Signal<em>News</em></span>
+      </a>
+      <p class="foot-tagline">AI-curated financial signals that move markets. By FZ Labs.</p>
+    </div>
+    <div class="foot-col">
+      <h5>Product</h5>
+      <ul>
+        <li><a href="#signals">Live Signals</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#markets">Markets</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Resources</h5>
+      <ul>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">API</a></li>
+        <li><a href="#">Changelog</a></li>
+        <li><a href="#">Status</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="https://fzlabs.com">FZ Labs</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Connect</h5>
+      <div class="foot-social">
+        <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68zm1.39 9.94v-8.37H5.5v8.37z"/></svg></a>
+        <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.79 23.4c.6.1.83-.26.83-.58v-2.04c-3.34.72-4.04-1.6-4.04-1.6-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.08-.73.08-.73 1.2.08 1.83 1.24 1.83 1.24 1.07 1.83 2.81 1.3 3.5.99.1-.78.42-1.3.76-1.6-2.66-.3-5.47-1.34-5.47-5.94 0-1.31.47-2.38 1.24-3.22-.13-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 5.8a11.5 11.5 0 0 1 3 .4c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.25 2.87.12 3.18.78.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.21.69.83.58A12 12 0 0 0 12 .3"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <div class="foot-credit">© 2026 <a href="https://fzlabs.com">FZ Labs</a> · SignalNews · All rights reserved</div>
+    <div class="foot-bottom-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Disclosures</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
