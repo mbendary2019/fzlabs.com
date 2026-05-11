@@ -165,15 +165,20 @@
     color: var(--text-1);
   }
   .nav-logo {
-    width: 34px; height: 34px;
+    height: 34px; width: auto;
+    aspect-ratio: 2450 / 664;
+    object-fit: contain;
+    display: block;
     position: relative;
+    filter: drop-shadow(0 0 12px rgba(255,157,0,0.45));
   }
-  .nav-logo img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 12px rgba(255,157,0,0.5)); }
-  .nav-logo::after {
-    content:''; position:absolute; inset: -6px;
-    background: radial-gradient(circle, rgba(255,157,0,0.5), transparent 70%);
-    filter: blur(10px); z-index: -1;
+  .nav-brand { position: relative; }
+  .nav-brand::after {
+    content:''; position:absolute; inset: -8px -10px;
+    background: radial-gradient(circle, rgba(255,157,0,0.45), transparent 70%);
+    filter: blur(12px); z-index: -1;
     animation: logoBreath 3s ease-in-out infinite;
+    pointer-events: none;
   }
   @keyframes logoBreath {
     0%, 100% { opacity: 0.45; }
@@ -2155,8 +2160,7 @@
 <nav class="nav">
   <div class="nav-inner">
     <a href="/" class="nav-brand">
-      <span class="nav-logo"><img src="logos/swarmix%20logo.png" alt="Swarmix logo"></span>
-      <span class="name">SWARMIX</span>
+      <img class="nav-logo" src="logos/swarmix%20logo.png" alt="Swarmix">
     </a>
     <div class="nav-links">
       <a href="#features">Features</a>
