@@ -1947,16 +1947,15 @@
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-    opacity: 0.85;
-    /* Tight horizontal-only mask: only the cards strip in the middle dims,
-       top + bottom + sides of the artwork stay visible */
-    mask-image: radial-gradient(ellipse 38% 28% at 50% 55%, transparent 0%, transparent 45%, black 95%);
-    -webkit-mask-image: radial-gradient(ellipse 38% 28% at 50% 55%, transparent 0%, transparent 45%, black 95%);
+    opacity: 0.92;
   }
-  /* Soft vignette — only darkens the very edges, leaves artwork visible */
+  /* Central radial darken where the cards sit — image stays fully visible
+     everywhere else (no mask, so the bottom never gets clipped) */
   .pricing-bg::before {
     content:''; position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(2,2,2,0.25) 0%, rgba(2,2,2,0) 18%, rgba(2,2,2,0) 78%, rgba(2,2,2,0.28) 100%);
+    background:
+      radial-gradient(ellipse 46% 40% at 50% 56%, rgba(2,2,2,0.78) 0%, rgba(2,2,2,0.55) 35%, rgba(2,2,2,0.2) 70%, transparent 95%),
+      linear-gradient(180deg, rgba(2,2,2,0.22) 0%, transparent 18%, transparent 82%, rgba(2,2,2,0.24) 100%);
   }
   /* Honeycomb texture in the central pocket */
   .pricing-bg::after {
