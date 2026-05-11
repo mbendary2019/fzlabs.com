@@ -1034,27 +1034,54 @@
   .view-all:hover { gap: 0.65rem; color: var(--honey-2); }
   .view-all svg { width: 13px; height: 13px; }
 
-  .templates-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+  /* Templates — horizontal scrollable strip */
+  .templates-scroll {
+    position: relative;
+    margin: 0 -2rem;
+    padding: 0 2rem 1rem;
   }
-  @media (max-width: 880px) { .templates-row { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 480px) { .templates-row { grid-template-columns: 1fr; } }
+  .templates-scroll::before, .templates-scroll::after {
+    content:''; position: absolute; top: 0; bottom: 0;
+    width: 60px; z-index: 3; pointer-events: none;
+  }
+  .templates-scroll::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--bg-0), transparent);
+  }
+  .templates-scroll::after {
+    right: 0;
+    background: linear-gradient(-90deg, var(--bg-0), transparent);
+  }
+  .templates-row {
+    display: flex;
+    gap: 0.9rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,170,60,0.3) transparent;
+    padding: 0.4rem 0 1rem;
+  }
+  .templates-row::-webkit-scrollbar { height: 6px; }
+  .templates-row::-webkit-scrollbar-track { background: transparent; }
+  .templates-row::-webkit-scrollbar-thumb {
+    background: rgba(255,170,60,0.25);
+    border-radius: 100px;
+  }
+  .templates-row::-webkit-scrollbar-thumb:hover { background: rgba(255,170,60,0.5); }
+
   .templates-row .tpl {
+    flex: 0 0 auto;
+    width: 220px;
     aspect-ratio: 1007 / 1330;
     position: relative;
     border-radius: var(--r-lg);
     overflow: hidden;
-    border: 1px solid rgba(255,170,60,0.18);
+    border: 1px solid rgba(255,170,60,0.22);
     background: var(--card);
     transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
-  }
-  .templates-row .tpl::before {
-    content:''; position: absolute; inset: 0;
-    background: linear-gradient(180deg, transparent 50%, rgba(2,2,2,0.92));
-    pointer-events: none;
-    z-index: 2;
+    scroll-snap-align: start;
   }
   .templates-row .tpl:hover {
     transform: translateY(-4px);
@@ -1068,42 +1095,9 @@
     z-index: 1;
     transition: transform 0.6s var(--ease);
   }
-  .templates-row .tpl:hover img { transform: scale(1.05); }
-  .templates-row .tpl-info {
-    position: absolute;
-    left: 0.7rem; right: 0.7rem; bottom: 0.6rem;
-    z-index: 3;
-    display: flex; align-items: center; gap: 0.5rem;
-    padding: 0.5rem 0.7rem;
-    background: rgba(8,4,1,0.78);
-    border: 1px solid rgba(255,170,60,0.22);
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-  }
-  .templates-row .tpl-info::before {
-    content:''; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--honey);
-    box-shadow: 0 0 5px var(--honey);
-    flex-shrink: 0;
-  }
-  .templates-row .tpl-info .cat {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.52rem; font-weight: 600;
-    color: var(--honey-3);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 0;
-    line-height: 1;
-    order: 2;
-    margin-left: auto;
-  }
-  .templates-row .tpl-info h4 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.82rem; font-weight: 700;
-    color: var(--text-1);
-    margin-bottom: 0;
-    line-height: 1;
-    order: 1;
+  .templates-row .tpl:hover img { transform: scale(1.04); }
+  @media (max-width: 580px) {
+    .templates-row .tpl { width: 180px; }
   }
 
   .tpl-cats {
@@ -1929,16 +1923,16 @@
     position: absolute; inset: 0; z-index: 0; pointer-events: none;
     background-image: url("logos/mascot%20pricing.png");
     background-repeat: no-repeat;
-    background-position: center 90%;
+    background-position: center bottom;
     background-size: cover;
-    opacity: 0.55;
+    opacity: 0.95;
   }
-  /* Dark veil over the image so the cards stay readable */
+  /* Soft veil to fade edges only — keep the mascot/platform vivid in the middle */
   .pricing-bg::before {
     content:''; position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 50% 70%, transparent 0%, rgba(2,2,2,0.55) 70%),
-      linear-gradient(180deg, rgba(2,2,2,0.85) 0%, rgba(2,2,2,0.4) 30%, rgba(2,2,2,0.45) 75%, rgba(2,2,2,0.92) 100%);
+      radial-gradient(ellipse 70% 60% at 50% 60%, transparent 0%, transparent 40%, rgba(2,2,2,0.45) 100%),
+      linear-gradient(180deg, rgba(2,2,2,0.7) 0%, rgba(2,2,2,0.05) 28%, rgba(2,2,2,0.0) 55%, rgba(2,2,2,0.35) 100%);
   }
   /* Honey halo + slow-spinning launch ring */
   .pricing-bg::after {
@@ -2564,42 +2558,17 @@
     <h2 class="sec-title-inline">Start with <span class="accent">Professional Templates</span></h2>
     <a href="#" class="view-all">View all templates <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
   </div>
-  <div class="templates-row">
-    <div class="tpl">
-      <img src="logos/t1.png" alt="Modern Agency template">
-      <div class="tpl-info"><div class="cat">Agency</div><h4>Modern Agency</h4></div>
-    </div>
-    <div class="tpl">
-      <img src="logos/t2.png" alt="SaaS Landing template">
-      <div class="tpl-info"><div class="cat">SaaS</div><h4>SaaS Landing</h4></div>
-    </div>
-    <div class="tpl">
-      <img src="logos/t3.png" alt="Portfolio template">
-      <div class="tpl-info"><div class="cat">Portfolio</div><h4>Portfolio</h4></div>
-    </div>
-    <div class="tpl">
-      <img src="logos/t4.png" alt="Ecommerce template">
-      <div class="tpl-info"><div class="cat">Ecommerce</div><h4>Ecommerce Store</h4></div>
-    </div>
-    <div class="tpl">
-      <img src="logos/t5.png" alt="Restaurant template">
-      <div class="tpl-info"><div class="cat">Restaurant</div><h4>Restaurant</h4></div>
-    </div>
-    <div class="tpl">
-      <img src="logos/t6.png" alt="Startup template">
-      <div class="tpl-info"><div class="cat">Startup</div><h4>Startup</h4></div>
-    </div>
-    <div class="tpl">
-      <img src="logos/t7.png" alt="Blog template">
-      <div class="tpl-info"><div class="cat">Blog</div><h4>Blog</h4></div>
-    </div>
-    <div class="tpl">
-      <img src="logos/t8.png" alt="Photography template">
-      <div class="tpl-info"><div class="cat">Photography</div><h4>Photography</h4></div>
-    </div>
-    <div class="tpl">
-      <img src="logos/t9.png" alt="Landing Page template">
-      <div class="tpl-info"><div class="cat">Landing</div><h4>Landing Page</h4></div>
+  <div class="templates-scroll">
+    <div class="templates-row">
+      <div class="tpl"><img src="logos/t1.png" alt="Template 1"></div>
+      <div class="tpl"><img src="logos/t2.png" alt="Template 2"></div>
+      <div class="tpl"><img src="logos/t3.png" alt="Template 3"></div>
+      <div class="tpl"><img src="logos/t4.png" alt="Template 4"></div>
+      <div class="tpl"><img src="logos/t5.png" alt="Template 5"></div>
+      <div class="tpl"><img src="logos/t6.png" alt="Template 6"></div>
+      <div class="tpl"><img src="logos/t7.png" alt="Template 7"></div>
+      <div class="tpl"><img src="logos/t8.png" alt="Template 8"></div>
+      <div class="tpl"><img src="logos/t9.png" alt="Template 9"></div>
     </div>
   </div>
 </section>
