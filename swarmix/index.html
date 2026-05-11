@@ -1939,28 +1939,24 @@
   /* ═══════════════════════════════════════════
      PRICING
   ═══════════════════════════════════════════ */
-  /* Pricing cinematic backdrop — img tag for reliable rendering */
-  .pricing-sec { position: relative; overflow: hidden; }
-  .pricing-bg-img {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center;
-    z-index: 0;
-    opacity: 0.9;
-    pointer-events: none;
-    user-select: none;
-    display: block;
+  /* Pricing cinematic backdrop — directly on the section element */
+  .pricing-sec {
+    position: relative;
+    overflow: hidden;
+    background-image: url("logos/mascot%20pricing1.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
   }
-  /* Central radial darken so cards stay readable */
+  /* Central radial darken so cards stay readable on top of the artwork */
   .pricing-veil {
     position: absolute; inset: 0;
     z-index: 0; pointer-events: none;
     background:
-      radial-gradient(ellipse 44% 38% at 50% 52%, rgba(2,2,2,0.75) 0%, rgba(2,2,2,0.45) 45%, transparent 85%);
+      radial-gradient(ellipse 44% 38% at 50% 52%, rgba(2,2,2,0.7) 0%, rgba(2,2,2,0.4) 45%, transparent 88%),
+      linear-gradient(180deg, rgba(2,2,2,0.18) 0%, transparent 12%, transparent 88%, rgba(2,2,2,0.22) 100%);
   }
-  .pricing-sec > *:not(.pricing-bg-img):not(.pricing-veil) { position: relative; z-index: 1; }
+  .pricing-sec > *:not(.pricing-veil) { position: relative; z-index: 1; }
 
   .price-grid {
     display: grid; grid-template-columns: repeat(3, minmax(260px, 300px));
@@ -2856,7 +2852,6 @@
 
 <!-- ═══ PRICING ═══ -->
 <section class="sec pricing-sec" id="pricing">
-  <img class="pricing-bg-img" src="logos/mascot%20pricing1.png" alt="" aria-hidden="true">
   <div class="pricing-veil"></div>
   <div class="sec-head">
     <div class="sec-marker"><span class="code">03 / PRICING</span></div>
