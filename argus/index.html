@@ -1208,6 +1208,297 @@
   }
 
   /* ═══════════════════════════════════════════
+     LIVE PROOF — sessions + approval stream + IDEs
+  ═══════════════════════════════════════════ */
+  .proof-sec {
+    position: relative; z-index: 1;
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 1rem 2rem 5rem;
+  }
+  .proof-marker {
+    display: flex; align-items: center; gap: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.66rem; font-weight: 600;
+    color: var(--text-3);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 0 0.4rem 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px dashed rgba(167,139,250,0.18);
+  }
+  .proof-marker-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  .proof-marker-region {
+    margin-left: auto;
+    color: var(--purple-3);
+  }
+  .proof-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 1100px) { .proof-grid { grid-template-columns: 1fr; } }
+  .proof-panel {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-xl);
+    padding: 1.4rem 1.3rem;
+    backdrop-filter: blur(16px) saturate(140%);
+    position: relative;
+    overflow: hidden;
+  }
+  .proof-panel::before {
+    content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(167,139,250,0.45), transparent);
+  }
+  .proof-panel-h {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1rem;
+  }
+  .proof-panel-h h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    color: var(--text-1);
+    letter-spacing: 0.04em;
+  }
+  .proof-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; font-weight: 600;
+    color: var(--purple-3);
+    background: rgba(139,92,246,0.14);
+    border: 1px solid rgba(167,139,250,0.3);
+    padding: 2px 8px;
+    border-radius: 100px;
+    letter-spacing: 0.06em;
+  }
+  .proof-status {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; font-weight: 700;
+    color: var(--green-2);
+    letter-spacing: 0.1em;
+  }
+  .proof-status .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 6px var(--green);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+
+  /* Sessions grid */
+  .sess-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.7rem;
+  }
+  @media (max-width: 700px) { .sess-grid { grid-template-columns: 1fr; } }
+  .sess-card {
+    background: rgba(8,8,22,0.55);
+    border: 1px solid rgba(167,139,250,0.14);
+    border-radius: 10px;
+    padding: 0.75rem 0.85rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .sess-card.waiting {
+    border-color: rgba(245,158,11,0.4);
+    background: rgba(245,158,11,0.08);
+    box-shadow: inset 0 0 18px rgba(245,158,11,0.12);
+    animation: waitPulse 2.2s ease-in-out infinite;
+  }
+  @keyframes waitPulse {
+    0%, 100% { box-shadow: inset 0 0 14px rgba(245,158,11,0.1); }
+    50%      { box-shadow: inset 0 0 22px rgba(245,158,11,0.22); }
+  }
+  .sess-card.done {
+    border-color: rgba(16,185,129,0.32);
+    background: rgba(16,185,129,0.06);
+  }
+  .sess-card-h {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .sess-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--text-1);
+  }
+  .sess-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.46rem; font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 100px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .sess-pill.run  { background: rgba(16,185,129,0.16); color: var(--green-2); border: 1px solid rgba(16,185,129,0.3); }
+  .sess-pill.wait { background: rgba(245,158,11,0.18); color: var(--amber); border: 1px solid rgba(245,158,11,0.35); }
+  .sess-pill.ok   { background: rgba(110,231,183,0.16); color: var(--green-2); border: 1px solid rgba(16,185,129,0.32); }
+  .sess-task {
+    font-size: 0.7rem;
+    color: var(--text-2);
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
+  }
+  .sess-stats {
+    display: flex; gap: 0.9rem; flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+    font-size: 0.6rem;
+    color: var(--text-1);
+    font-weight: 600;
+  }
+  .sess-stats .lab { color: var(--text-4); font-weight: 500; margin-right: 4px; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.54rem; }
+  .sess-stats .risk-h { color: var(--red-2); }
+  .sess-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .sess-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--purple-2));
+    border-radius: inherit;
+    box-shadow: 0 0 6px rgba(167,139,250,0.5);
+  }
+  .sess-bar-fill.amber { background: linear-gradient(90deg, var(--amber), #FBBF24); box-shadow: 0 0 6px rgba(251,191,36,0.5); }
+  .sess-bar-fill.green { background: linear-gradient(90deg, var(--green), var(--green-2)); box-shadow: 0 0 6px rgba(16,185,129,0.5); }
+
+  /* Approval stream */
+  .stream-list {
+    display: flex; flex-direction: column;
+    gap: 0.45rem;
+    max-height: 460px;
+    overflow: hidden;
+  }
+  .stream-row {
+    display: grid;
+    grid-template-columns: 68px 1fr auto;
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.55rem 0.65rem;
+    background: rgba(8,8,22,0.55);
+    border: 1px solid rgba(167,139,250,0.1);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stream-row.pending {
+    background: rgba(239,68,68,0.08);
+    border-color: rgba(239,68,68,0.36);
+    box-shadow: inset 0 0 14px rgba(239,68,68,0.12);
+    animation: alertPulse 2.4s ease-in-out infinite;
+  }
+  .stream-row.pending::before {
+    content:''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(248,113,113,0.18), transparent);
+    animation: streamSweep 2.4s linear infinite;
+  }
+  @keyframes streamSweep { to { left: 150%; } }
+  .stream-row.approved {
+    border-left: 3px solid rgba(16,185,129,0.5);
+    padding-left: 0.5rem;
+  }
+  .stream-row.rejected {
+    border-left: 3px solid rgba(239,68,68,0.5);
+    padding-left: 0.5rem;
+    opacity: 0.78;
+  }
+  .stream-time {
+    font-size: 0.6rem;
+    color: var(--text-4);
+    letter-spacing: 0.04em;
+  }
+  .stream-title {
+    font-size: 0.78rem;
+    color: var(--text-1);
+    line-height: 1.3;
+  }
+  .stream-title .hl {
+    color: var(--purple-2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+  }
+  .stream-meta {
+    font-size: 0.58rem;
+    color: var(--text-3);
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+  }
+  .stream-meta .risk-h { color: var(--red-2); font-weight: 700; }
+  .stream-meta .risk-m { color: var(--amber); font-weight: 700; }
+  .stream-meta .risk-l { color: var(--green-2); font-weight: 700; }
+  .stream-actions { display: flex; gap: 4px; }
+  .stream-actions .ar {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.62rem; font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid;
+  }
+  .stream-actions .rej { background: rgba(255,255,255,0.05); color: var(--text-2); border-color: rgba(255,255,255,0.14); }
+  .stream-actions .app {
+    background: linear-gradient(135deg, var(--purple), var(--purple-deep));
+    color: #fff;
+    border-color: rgba(167,139,250,0.5);
+    box-shadow: 0 3px 8px rgba(139,92,246,0.4);
+  }
+  .stream-state {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .stream-state.ok { color: var(--green-2); }
+  .stream-state.rej { color: var(--red-2); }
+
+  /* IDE strip */
+  .ide-strip {
+    display: flex; align-items: center; gap: 2rem;
+    padding: 1.3rem 1.5rem;
+    background: rgba(8,8,22,0.5);
+    border: 1px solid rgba(167,139,250,0.13);
+    border-radius: var(--r-lg);
+    backdrop-filter: blur(14px);
+    flex-wrap: wrap;
+  }
+  .ide-strip-label {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; font-weight: 700;
+    color: var(--text-3);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .ide-strip-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  .ide-strip-row {
+    display: flex; flex-wrap: wrap;
+    align-items: center;
+    gap: 1.8rem 2.4rem;
+    flex: 1;
+  }
+  .ide-mark {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    color: rgba(255,255,255,0.62);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 0.94rem;
+    letter-spacing: -0.005em;
+    transition: color 0.3s, transform 0.3s, filter 0.3s;
+    cursor: default;
+  }
+  .ide-mark:hover { color: rgba(255,255,255,0.95); transform: translateY(-1px); filter: drop-shadow(0 0 12px rgba(167,139,250,0.4)); }
+  .ide-mark svg { width: 22px; height: 22px; }
+
+  /* ═══════════════════════════════════════════
      OPERATIONS LIVE — telemetry strip
   ═══════════════════════════════════════════ */
   .ops-section {
@@ -2405,6 +2696,219 @@
           <span>Settings</span>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LIVE PROOF — sessions grid + approval stream + integrations ═══ -->
+<section class="proof-sec" id="proof">
+  <div class="proof-marker">
+    <span class="proof-marker-dot"></span>
+    <span>LIVE · 14 SESSIONS · 23 APPROVALS PENDING</span>
+    <span class="proof-marker-region">RELAY · BAH-1</span>
+  </div>
+
+  <div class="proof-grid">
+    <!-- ACTIVE SESSIONS -->
+    <div class="proof-panel proof-sessions">
+      <div class="proof-panel-h">
+        <h3>Active Sessions</h3>
+        <span class="proof-count">6 / 14</span>
+      </div>
+      <div class="sess-grid">
+        <div class="sess-card running">
+          <div class="sess-card-h">
+            <span class="sess-name">payments-api</span>
+            <span class="sess-pill run">running</span>
+          </div>
+          <div class="sess-task mono">refactor checkout flow</div>
+          <div class="sess-stats">
+            <span class="mono"><span class="lab">edits</span>14</span>
+            <span class="mono"><span class="lab">tests</span>142/142</span>
+            <span class="mono"><span class="lab">eta</span>2m</span>
+          </div>
+          <div class="sess-bar"><div class="sess-bar-fill" style="width:72%"></div></div>
+        </div>
+        <div class="sess-card waiting">
+          <div class="sess-card-h">
+            <span class="sess-name">payments-api</span>
+            <span class="sess-pill wait">waiting · approval</span>
+          </div>
+          <div class="sess-task mono">drop migration 0042_legacy</div>
+          <div class="sess-stats">
+            <span class="mono risk-h"><span class="lab">risk</span>high</span>
+            <span class="mono"><span class="lab">age</span>4.2s</span>
+          </div>
+          <div class="sess-bar"><div class="sess-bar-fill amber" style="width:100%"></div></div>
+        </div>
+        <div class="sess-card running">
+          <div class="sess-card-h">
+            <span class="sess-name">auth-service</span>
+            <span class="sess-pill run">running</span>
+          </div>
+          <div class="sess-task mono">add JWT refresh handler</div>
+          <div class="sess-stats">
+            <span class="mono"><span class="lab">edits</span>7</span>
+            <span class="mono"><span class="lab">tests</span>89/89</span>
+            <span class="mono"><span class="lab">eta</span>5m</span>
+          </div>
+          <div class="sess-bar"><div class="sess-bar-fill" style="width:48%"></div></div>
+        </div>
+        <div class="sess-card running">
+          <div class="sess-card-h">
+            <span class="sess-name">ecommerce-web</span>
+            <span class="sess-pill run">running</span>
+          </div>
+          <div class="sess-task mono">build cart drawer component</div>
+          <div class="sess-stats">
+            <span class="mono"><span class="lab">edits</span>22</span>
+            <span class="mono"><span class="lab">tests</span>56/58</span>
+            <span class="mono"><span class="lab">eta</span>8m</span>
+          </div>
+          <div class="sess-bar"><div class="sess-bar-fill" style="width:34%"></div></div>
+        </div>
+        <div class="sess-card done">
+          <div class="sess-card-h">
+            <span class="sess-name">ui-redesign</span>
+            <span class="sess-pill ok">shipped</span>
+          </div>
+          <div class="sess-task mono">apply token migration v3</div>
+          <div class="sess-stats">
+            <span class="mono"><span class="lab">edits</span>41</span>
+            <span class="mono"><span class="lab">tests</span>304/304</span>
+            <span class="mono"><span class="lab">PR</span>#827</span>
+          </div>
+          <div class="sess-bar"><div class="sess-bar-fill green" style="width:100%"></div></div>
+        </div>
+        <div class="sess-card running">
+          <div class="sess-card-h">
+            <span class="sess-name">analytics-pipe</span>
+            <span class="sess-pill run">running</span>
+          </div>
+          <div class="sess-task mono">add event funnel materialized view</div>
+          <div class="sess-stats">
+            <span class="mono"><span class="lab">edits</span>3</span>
+            <span class="mono"><span class="lab">tests</span>12/12</span>
+            <span class="mono"><span class="lab">eta</span>1m</span>
+          </div>
+          <div class="sess-bar"><div class="sess-bar-fill" style="width:88%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPROVAL STREAM -->
+    <div class="proof-panel proof-stream">
+      <div class="proof-panel-h">
+        <h3>Approval Stream</h3>
+        <span class="proof-status"><span class="dot"></span>LIVE</span>
+      </div>
+      <div class="stream-list">
+        <div class="stream-row pending">
+          <div class="stream-time mono">14:38:09</div>
+          <div class="stream-body">
+            <div class="stream-title">Drop migration <span class="hl">0042_dropped_legacy</span></div>
+            <div class="stream-meta mono">payments-api · <span class="risk-h">HIGH</span> · waiting 4.2s</div>
+          </div>
+          <div class="stream-actions">
+            <span class="ar rej">Reject</span>
+            <span class="ar app">Approve</span>
+          </div>
+        </div>
+        <div class="stream-row approved">
+          <div class="stream-time mono">14:37:21</div>
+          <div class="stream-body">
+            <div class="stream-title">Force push to <span class="hl">main</span></div>
+            <div class="stream-meta mono">ecommerce-web · <span class="risk-h">HIGH</span> · approved · 3.1s</div>
+          </div>
+          <div class="stream-state ok">✓ approved</div>
+        </div>
+        <div class="stream-row approved">
+          <div class="stream-time mono">14:36:48</div>
+          <div class="stream-body">
+            <div class="stream-title">Write to <span class="hl">.env.production</span></div>
+            <div class="stream-meta mono">auth-service · <span class="risk-m">MED</span> · approved · 2.4s</div>
+          </div>
+          <div class="stream-state ok">✓ approved</div>
+        </div>
+        <div class="stream-row rejected">
+          <div class="stream-time mono">14:35:12</div>
+          <div class="stream-body">
+            <div class="stream-title">Delete table <span class="hl">user_sessions</span></div>
+            <div class="stream-meta mono">analytics-pipe · <span class="risk-h">HIGH</span> · rejected · 1.8s</div>
+          </div>
+          <div class="stream-state rej">✗ rejected</div>
+        </div>
+        <div class="stream-row approved">
+          <div class="stream-time mono">14:32:55</div>
+          <div class="stream-body">
+            <div class="stream-title">Run <span class="hl">npm install stripe@latest</span></div>
+            <div class="stream-meta mono">payments-api · <span class="risk-l">LOW</span> · approved · 4.7s</div>
+          </div>
+          <div class="stream-state ok">✓ approved</div>
+        </div>
+        <div class="stream-row approved">
+          <div class="stream-time mono">14:31:03</div>
+          <div class="stream-body">
+            <div class="stream-title">Edit <span class="hl">checkout.controller.ts</span></div>
+            <div class="stream-meta mono">payments-api · <span class="risk-l">LOW</span> · auto-approved · policy</div>
+          </div>
+          <div class="stream-state ok">✓ auto</div>
+        </div>
+        <div class="stream-row approved">
+          <div class="stream-time mono">14:28:41</div>
+          <div class="stream-body">
+            <div class="stream-title">Create branch <span class="hl">feat/jwt-refresh</span></div>
+            <div class="stream-meta mono">auth-service · <span class="risk-l">LOW</span> · auto-approved · policy</div>
+          </div>
+          <div class="stream-state ok">✓ auto</div>
+        </div>
+        <div class="stream-row approved">
+          <div class="stream-time mono">14:24:17</div>
+          <div class="stream-body">
+            <div class="stream-title">Update <span class="hl">tsconfig.json</span></div>
+            <div class="stream-meta mono">ui-redesign · <span class="risk-l">LOW</span> · auto-approved · policy</div>
+          </div>
+          <div class="stream-state ok">✓ auto</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IDE INTEGRATIONS STRIP -->
+  <div class="ide-strip">
+    <div class="ide-strip-label">
+      <span class="ide-strip-dot"></span>
+      Native integrations
+    </div>
+    <div class="ide-strip-row">
+      <span class="ide-mark" title="VS Code">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.06 1.31a1.5 1.5 0 0 1 1.55.04l4.05 1.96a1.5 1.5 0 0 1 .84 1.36v14.66a1.5 1.5 0 0 1-.84 1.36l-4.05 1.96a1.5 1.5 0 0 1-1.71-.27L9.6 16.32 5.92 19.1a.5.5 0 0 1-.71-.05l-1.86-2.06a.5.5 0 0 1 0-.7L6.5 12 3.34 7.7a.5.5 0 0 1 .01-.7l1.86-2.06a.5.5 0 0 1 .71-.05l3.69 2.78 7.3-6.06z"/></svg>
+        VS Code
+      </span>
+      <span class="ide-mark" title="Cursor">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 2 21 12 14 13 11 21"/></svg>
+        Cursor
+      </span>
+      <span class="ide-mark" title="Claude Code">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L 21 12 L 12 22 L 3 12 Z" opacity="0.85"/><circle cx="12" cy="12" r="3" fill="#1a0a02"/></svg>
+        Claude Code
+      </span>
+      <span class="ide-mark" title="JetBrains">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h6M7 16h2 M14 8c2 0 3 1 3 3v3c0 1 -1 2 -3 2"/></svg>
+        JetBrains
+      </span>
+      <span class="ide-mark" title="Zed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16L4 20h16"/></svg>
+        Zed
+      </span>
+      <span class="ide-mark" title="Neovim">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5l8-3 10 5v12l-8 3-10-5V5z" opacity="0.85"/><path d="M11 2v20" stroke="#1a0a02" stroke-width="1.5"/></svg>
+        Neovim
+      </span>
+      <span class="ide-mark" title="GitHub Copilot">
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M8 14c0 .5.4 1 1 1h6c.6 0 1-.5 1-1" fill="none" stroke="#1a0a02" stroke-width="1.6"/></svg>
+        Copilot
+      </span>
     </div>
   </div>
 </section>
