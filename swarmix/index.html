@@ -2062,7 +2062,13 @@
     color: var(--text-1);
     margin-bottom: 1rem;
   }
-  .foot-brand img { width: 32px; height: 32px; filter: drop-shadow(0 0 12px rgba(255,157,0,0.4)); }
+  .foot-brand img {
+    height: 34px; width: auto;
+    aspect-ratio: 2450 / 664;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 0 12px rgba(255,157,0,0.4));
+  }
   .foot-brand .name {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 800; font-size: 0.95rem;
@@ -2762,7 +2768,6 @@
     <div class="foot-brand-col">
       <a href="/" class="foot-brand">
         <img src="logos/swarmix%20logo.png" alt="Swarmix">
-        <span class="name">SWARMIX</span>
       </a>
       <p class="foot-tagline">AI-powered platform for building stunning websites and web apps at the speed of thought.</p>
     </div>
