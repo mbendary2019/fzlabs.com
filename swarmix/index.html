@@ -696,6 +696,178 @@
   }
   .preview-url svg { width: 12px; height: 12px; color: var(--honey-3); flex-shrink: 0; }
 
+  /* New preview layout — browser + mobile sidekick */
+  .preview-chip {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--honey-3);
+    padding: 0.35rem 0.8rem;
+    border: 1px solid rgba(255,170,60,0.32);
+    border-radius: 100px;
+    background: rgba(255,157,0,0.08);
+    margin-bottom: 1.2rem;
+  }
+  .preview-chip .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--honey);
+    box-shadow: 0 0 6px var(--honey);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  .preview-stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 0.28fr;
+    gap: 0.9rem;
+    align-items: stretch;
+  }
+  .preview-stage::before {
+    content:''; position: absolute;
+    left: -8%; right: -8%; top: 20%; bottom: -10%;
+    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(255,157,0,0.4), transparent 70%);
+    filter: blur(50px); z-index: -1;
+    pointer-events: none;
+  }
+  @media (max-width: 1100px) {
+    .preview-stage { grid-template-columns: 1fr; }
+  }
+  .browser-frame {
+    position: relative;
+    background: linear-gradient(180deg, rgba(20,12,4,0.92), rgba(11,5,2,0.95));
+    border: 1px solid rgba(255,170,60,0.28);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      0 35px 90px rgba(0,0,0,0.6),
+      0 0 70px rgba(255,157,0,0.22);
+    display: flex; flex-direction: column;
+    transform: perspective(2400px) rotateY(-3deg) rotateX(1.5deg);
+    transition: transform 0.5s var(--ease);
+  }
+  .browser-frame:hover { transform: perspective(2400px) rotateY(-1deg) rotateX(0.5deg) translateY(-4px); }
+  .browser-frame::after {
+    content:''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,170,60,0.18), transparent 35%, transparent 65%, rgba(255,179,80,0.12));
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .bf-bar {
+    display: flex; align-items: center; gap: 0.65rem;
+    padding: 0.65rem 0.85rem;
+    background: rgba(0,0,0,0.35);
+    border-bottom: 1px solid rgba(255,170,60,0.12);
+    flex-shrink: 0;
+    position: relative; z-index: 2;
+  }
+  .bf-dots { display: flex; gap: 6px; }
+  .bf-dots .d { width: 10px; height: 10px; border-radius: 50%; }
+  .bf-dots .r { background: #FF5F57; }
+  .bf-dots .y { background: #FEBC2E; }
+  .bf-dots .g { background: #28C840; }
+  .bf-url {
+    flex: 1;
+    display: flex; align-items: center; gap: 6px;
+    padding: 0.36rem 0.7rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,170,60,0.16);
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-2);
+  }
+  .bf-url svg { width: 11px; height: 11px; color: var(--honey-3); flex-shrink: 0; }
+  .bf-bar .live-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px;
+    border-radius: 100px;
+    background: rgba(110,231,183,0.14);
+    border: 1px solid rgba(110,231,183,0.4);
+    color: var(--green-2);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.66rem; font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .bf-bar .live-tag::before {
+    content:''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--green-2); box-shadow: 0 0 5px var(--green-2);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  .bf-body {
+    flex: 1; min-height: 0;
+    background: #0a0501;
+    position: relative;
+    z-index: 1;
+  }
+  .bf-body img {
+    width: 100%; height: auto;
+    display: block;
+  }
+  .bf-devices {
+    display: flex; justify-content: center; gap: 0.5rem;
+    padding: 0.85rem;
+    background: rgba(0,0,0,0.35);
+    border-top: 1px solid rgba(255,170,60,0.1);
+    position: relative; z-index: 2;
+  }
+  .dev-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,170,60,0.16);
+    border-radius: 8px;
+    color: var(--text-2);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .dev-btn:hover { background: rgba(255,157,0,0.1); color: var(--text-1); }
+  .dev-btn.act {
+    background: linear-gradient(135deg, var(--honey), var(--honey-deep));
+    color: #1a0a02;
+    border-color: rgba(255,179,80,0.55);
+    box-shadow: 0 6px 16px rgba(255,157,0,0.4);
+  }
+  .dev-btn svg { width: 14px; height: 14px; }
+
+  .mobile-preview-frame {
+    position: relative;
+    border-radius: 28px;
+    overflow: hidden;
+    border: 1.5px solid rgba(255,170,60,0.32);
+    background: #0a0501;
+    box-shadow:
+      0 30px 60px rgba(0,0,0,0.65),
+      0 0 50px rgba(255,157,0,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+    transform: perspective(2400px) rotateY(-6deg) rotateX(2deg) translateY(28px);
+    transition: transform 0.5s var(--ease);
+  }
+  .mobile-preview-frame:hover { transform: perspective(2400px) rotateY(-3deg) rotateX(1deg) translateY(16px); }
+  .mobile-preview-frame::after {
+    content:''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,170,60,0.18), transparent 40%, transparent 60%, rgba(255,179,80,0.1));
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .mpf-notch {
+    position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+    width: 36%; height: 14px;
+    border-radius: 100px;
+    background: #000;
+    z-index: 3;
+  }
+  .mobile-preview-frame img {
+    width: 100%; height: auto;
+    display: block;
+  }
+  @media (max-width: 1100px) {
+    .mobile-preview-frame { max-width: 240px; margin: 0 auto; transform: none; }
+    .browser-frame { transform: none; }
+  }
+
   /* ═══════════════════════════════════════════
      TEMPLATE SHOWCASE — uses s card 1/2/3.png
   ═══════════════════════════════════════════ */
@@ -767,6 +939,107 @@
   .tpl-info .preview-btn:hover { gap: 0.55rem; background: rgba(255,157,0,0.28); }
   .tpl-info .preview-btn svg { width: 10px; height: 10px; }
 
+  /* Templates header row */
+  .sec-head-row {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .sec-title-inline {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--text-1);
+  }
+  .sec-title-inline .accent {
+    background: linear-gradient(135deg, var(--honey-3), var(--honey-fire));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .view-all {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    color: var(--honey-3);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem; font-weight: 700;
+    transition: gap 0.25s, color 0.25s;
+  }
+  .view-all:hover { gap: 0.65rem; color: var(--honey-2); }
+  .view-all svg { width: 13px; height: 13px; }
+
+  .templates-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.9rem;
+  }
+  @media (max-width: 1100px) { .templates-row { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 580px) { .templates-row { grid-template-columns: repeat(2, 1fr); } }
+  .templates-row .tpl {
+    aspect-ratio: 4 / 5;
+    position: relative;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    border: 1px solid rgba(255,170,60,0.18);
+    background: var(--card);
+    transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  }
+  .templates-row .tpl::before {
+    content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(2,2,2,0.92));
+    pointer-events: none;
+    z-index: 2;
+  }
+  .templates-row .tpl:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,170,60,0.5);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 50px rgba(255,157,0,0.28);
+  }
+  .templates-row .tpl img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    transition: transform 0.6s var(--ease);
+  }
+  .templates-row .tpl:hover img { transform: scale(1.05); }
+  .templates-row .tpl-info {
+    position: absolute;
+    left: 0.7rem; right: 0.7rem; bottom: 0.6rem;
+    z-index: 3;
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 0.7rem;
+    background: rgba(8,4,1,0.78);
+    border: 1px solid rgba(255,170,60,0.22);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+  }
+  .templates-row .tpl-info::before {
+    content:''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--honey);
+    box-shadow: 0 0 5px var(--honey);
+    flex-shrink: 0;
+  }
+  .templates-row .tpl-info .cat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.52rem; font-weight: 600;
+    color: var(--honey-3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0;
+    line-height: 1;
+    order: 2;
+    margin-left: auto;
+  }
+  .templates-row .tpl-info h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem; font-weight: 700;
+    color: var(--text-1);
+    margin-bottom: 0;
+    line-height: 1;
+    order: 1;
+  }
+
   .tpl-cats {
     display: flex; flex-wrap: wrap;
     justify-content: center;
@@ -799,6 +1072,212 @@
     gap: 1.4rem;
   }
   @media (max-width: 1000px) { .gen-wrap { grid-template-columns: 1fr; } }
+
+  /* 3-column gen layout */
+  .gen-wrap-3 {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 0.85fr;
+    gap: 0.9rem;
+    align-items: stretch;
+  }
+  @media (max-width: 1100px) {
+    .gen-wrap-3 { grid-template-columns: 1fr 1fr; }
+    .gen-activity { grid-column: 1 / -1; }
+  }
+  @media (max-width: 700px) { .gen-wrap-3 { grid-template-columns: 1fr; } }
+
+  .gen-textarea .mic-ic {
+    position: absolute;
+    right: 0.8rem; bottom: 0.7rem;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--honey), var(--honey-deep));
+    color: #1a0a02;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(255,157,0,0.45);
+  }
+  .gen-textarea .mic-ic svg { width: 13px; height: 13px; }
+  .gen-textarea { padding-right: 3rem; }
+
+  .gen-chip svg { width: 12px; height: 12px; }
+
+  .gen-types {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+  }
+  @media (max-width: 540px) { .gen-types { grid-template-columns: repeat(2, 1fr); } }
+  .gt {
+    display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+    padding: 0.75rem 0.5rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,170,60,0.18);
+    border-radius: 10px;
+    color: var(--text-2);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .gt:hover { background: rgba(255,157,0,0.1); color: var(--text-1); }
+  .gt.act {
+    background: linear-gradient(135deg, var(--honey), var(--honey-deep));
+    color: #1a0a02;
+    border-color: rgba(255,179,80,0.55);
+    box-shadow: 0 6px 18px rgba(255,157,0,0.42);
+  }
+  .gt svg { width: 18px; height: 18px; }
+
+  .gen-progress-h {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap; gap: 0.5rem;
+  }
+  .gen-progress-h h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    color: var(--text-1);
+    margin-bottom: 0;
+  }
+  .live-mark {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: var(--green-2);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.74rem; font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .live-mark .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green-2); box-shadow: 0 0 6px var(--green-2);
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+
+  .vtimeline { display: flex; flex-direction: column; gap: 0.6rem; }
+  .vt-item {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.7rem 0.85rem;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,170,60,0.1);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .vt-item.done { background: rgba(110,231,183,0.04); border-color: rgba(110,231,183,0.18); }
+  .vt-item.act {
+    background: rgba(255,157,0,0.08);
+    border-color: rgba(255,170,60,0.35);
+    box-shadow: 0 0 18px rgba(255,157,0,0.18);
+  }
+  .vt-item.act::before {
+    content:''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,179,80,0.18), transparent);
+    animation: timelineSweep 2s linear infinite;
+  }
+  @keyframes timelineSweep { to { left: 150%; } }
+  .vt-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,170,60,0.25);
+    background: rgba(0,0,0,0.35);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-3);
+  }
+  .vt-num svg { width: 12px; height: 12px; }
+  .vt-item.done .vt-num {
+    background: var(--green-2);
+    border-color: var(--green-2);
+    color: #0a0501;
+  }
+  .vt-item.act .vt-num {
+    background: var(--honey);
+    border-color: var(--honey);
+    color: #1a0a02;
+    box-shadow: 0 0 12px rgba(255,157,0,0.55);
+  }
+  .vt-item.act .vt-num svg { animation: ringSpin 2s linear infinite; }
+  @keyframes ringSpin { to { transform: rotate(360deg); } }
+  .vt-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.88rem; font-weight: 700;
+    color: var(--text-1);
+    line-height: 1.2;
+  }
+  .vt-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.66rem;
+    color: var(--text-3);
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+  }
+  .vt-item.done .vt-sub { color: var(--green-2); }
+  .vt-item.act .vt-sub { color: var(--honey-3); }
+  .vt-state.ok svg { width: 18px; height: 18px; color: var(--green-2); }
+  .vt-state.spinning svg {
+    width: 18px; height: 18px; color: var(--honey-3);
+    animation: ringSpin 1.5s linear infinite;
+  }
+  .vt-state.pending {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-4);
+    letter-spacing: 0.08em;
+  }
+
+  /* Live Activity panel */
+  .gen-activity {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--r-2xl);
+    padding: 1.6rem;
+    backdrop-filter: blur(18px);
+    position: relative;
+    overflow: hidden;
+  }
+  .gen-activity::before {
+    content:''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,170,60,0.55), transparent);
+  }
+  .gen-activity h5 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem; font-weight: 700;
+    color: var(--text-1);
+    margin-bottom: 1rem;
+    letter-spacing: 0.04em;
+  }
+  .act-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .act-row {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 0.7rem;
+    align-items: flex-start;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .act-row:last-child { border-bottom: none; }
+  .act-time {
+    font-size: 0.66rem;
+    color: var(--text-3);
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+  }
+  .act-title {
+    font-size: 0.78rem;
+    color: var(--text-1);
+    line-height: 1.4;
+  }
+  .act-title .hl { color: var(--honey-3); font-weight: 600; }
+  .eta {
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid rgba(255,170,60,0.14);
+    font-size: 0.72rem;
+    color: var(--honey-3);
+    letter-spacing: 0.06em;
+    text-align: right;
+  }
 
   .gen-prompt {
     background: var(--card);
@@ -1019,6 +1498,72 @@
     align-items: center;
   }
   @media (max-width: 1000px) { .mobile-showcase { grid-template-columns: 1fr; } }
+
+  /* 3-col mobile section: phones + copy + QR */
+  .mobile-showcase-3 {
+    display: grid;
+    grid-template-columns: 1.05fr 0.9fr 0.32fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (max-width: 1100px) {
+    .mobile-showcase-3 { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+    .mobile-showcase-3 .mobile-stores { justify-content: center; }
+    .qr-card { margin: 0 auto; }
+  }
+  .qr-card {
+    background: #fff;
+    border: 1px solid rgba(255,170,60,0.25);
+    border-radius: var(--r-xl);
+    padding: 1rem;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 50px rgba(255,157,0,0.25);
+    aspect-ratio: 1 / 1.18;
+    max-width: 220px;
+    display: flex; flex-direction: column;
+  }
+  .qr-title {
+    text-align: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 0.78rem;
+    color: #1a0a02;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.02em;
+  }
+  .qr-grid {
+    flex: 1;
+    aspect-ratio: 1 / 1;
+    background:
+      /* corner squares */
+      linear-gradient(#0a0501 0 0) 0 0 / 22% 22% no-repeat,
+      linear-gradient(#0a0501 0 0) 100% 0 / 22% 22% no-repeat,
+      linear-gradient(#0a0501 0 0) 0 100% / 22% 22% no-repeat,
+      /* corner inner */
+      radial-gradient(circle at 11% 11%, transparent 0 7%, #fff 7% 9%, transparent 9%),
+      radial-gradient(circle at 89% 11%, transparent 0 7%, #fff 7% 9%, transparent 9%),
+      radial-gradient(circle at 11% 89%, transparent 0 7%, #fff 7% 9%, transparent 9%),
+      radial-gradient(circle at 11% 11%, #fff 0 4%, transparent 4%),
+      radial-gradient(circle at 89% 11%, #fff 0 4%, transparent 4%),
+      radial-gradient(circle at 11% 89%, #fff 0 4%, transparent 4%),
+      /* fine pattern dots */
+      radial-gradient(#0a0501 0 1px, transparent 1.2px) 0 0 / 6% 6%,
+      #fff;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .qr-bee {
+    position: absolute;
+    inset: 38%;
+    background: var(--honey);
+    border: 2px solid #fff;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 18px rgba(255,157,0,0.55);
+  }
+  .qr-bee svg {
+    width: 70%; height: 70%;
+    color: #fff;
+  }
   .phones-row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -1113,10 +1658,10 @@
   ═══════════════════════════════════════════ */
   .features {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
   }
-  @media (max-width: 1000px) { .features { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 880px) { .features { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 540px) { .features { grid-template-columns: 1fr; } }
   .feat {
     background: var(--card);
@@ -1342,6 +1887,83 @@
   /* ═══════════════════════════════════════════
      FINAL CTA
   ═══════════════════════════════════════════ */
+  /* Final CTA 2-col with mascot */
+  .final-cta-wrap {
+    max-width: 1280px;
+    margin: 5rem auto;
+    padding: 0 2rem;
+  }
+  .final-cta-2 {
+    position: relative;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(255,157,0,0.32), transparent 55%),
+      linear-gradient(180deg, rgba(20,12,4,0.7), rgba(11,5,2,0.9));
+    border: 1px solid rgba(255,170,60,0.32);
+    border-radius: var(--r-2xl);
+    padding: 2rem 2.5rem 2rem 1.5rem;
+    display: grid;
+    grid-template-columns: 0.4fr 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    overflow: hidden;
+    backdrop-filter: blur(18px);
+  }
+  .final-cta-2::before {
+    content:''; position:absolute; inset:-1px;
+    border-radius: calc(var(--r-2xl) + 1px);
+    padding: 1px; pointer-events: none;
+    background: linear-gradient(135deg, rgba(255,170,60,0.5), transparent 50%, rgba(255,106,0,0.4));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+  }
+  .final-cta-2::after {
+    content:''; position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 100'%3E%3Cpolygon points='28,2 54,17 54,47 28,62 2,47 2,17' fill='none' stroke='%23FFAA3C' stroke-opacity='0.4' stroke-width='1'/%3E%3Cpolygon points='28,52 54,67 54,97 28,112 2,97 2,67' fill='none' stroke='%23FFAA3C' stroke-opacity='0.4' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 56px 100px;
+    opacity: 0.06;
+    pointer-events: none;
+    mask-image: linear-gradient(90deg, transparent 0%, black 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 50%, transparent 100%);
+  }
+  @media (max-width: 800px) {
+    .final-cta-2 { grid-template-columns: 1fr; padding: 2rem; text-align: center; }
+    .final-cta-2 .hero-ctas { justify-content: center; }
+  }
+  .final-cta-img {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--r-xl);
+  }
+  .final-cta-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: drop-shadow(0 0 30px rgba(255,157,0,0.45));
+  }
+  .final-cta-img::after {
+    content:''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(11,5,2,0.55) 80%, rgba(11,5,2,0.85));
+    pointer-events: none;
+  }
+  @media (max-width: 800px) { .final-cta-img { max-width: 180px; margin: 0 auto; } .final-cta-img::after { display:none; } }
+  .final-cta-copy { position: relative; z-index: 2; }
+  .final-cta-copy h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.6rem;
+  }
+  .final-cta-copy h2 .accent {
+    background: linear-gradient(135deg, var(--honey-3), var(--honey-fire));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .final-cta-copy p { color: var(--text-2); font-size: 0.98rem; max-width: 500px; margin-bottom: 1.4rem; }
+  .final-cta-copy .hero-ctas { margin-bottom: 0; }
+
   .final-cta {
     position: relative;
     max-width: 1280px;
@@ -1416,8 +2038,8 @@
   .foot-main {
     max-width: 1280px; margin: 0 auto;
     display: grid;
-    grid-template-columns: 1.3fr 0.9fr 0.9fr 0.9fr 1.2fr;
-    gap: 2.5rem;
+    grid-template-columns: 1.4fr 0.85fr 0.85fr 0.85fr 0.85fr;
+    gap: 2rem;
     margin-bottom: 2.8rem;
   }
   @media (max-width: 880px) { .foot-main { grid-template-columns: 1fr 1fr; gap: 2rem; } }
@@ -1498,6 +2120,12 @@
     transition: color 0.25s;
   }
   .foot-bottom-links a:hover { color: var(--text-1); }
+  .foot-social-row {
+    max-width: 1280px;
+    margin: 0 auto 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line-2);
+  }
   .foot-social { display: flex; gap: 0.7rem; }
   .foot-social a {
     width: 34px; height: 34px;
@@ -1608,23 +2236,23 @@
   <div class="stats">
     <div class="stat">
       <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="stat-v">2.4K+</div><div class="stat-l">Websites generated</div></div>
-    </div>
-    <div class="stat">
-      <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 L 15 10 L 22 12 L 15 14 L 12 22 L 9 14 L 2 12 L 9 10 Z"/></svg></div>
-      <div><div class="stat-v">18K+</div><div class="stat-l">AI generations</div></div>
+      <div><div class="stat-v">120+</div><div class="stat-l">Projects delivered</div></div>
     </div>
     <div class="stat">
       <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2M14 14h3a4 4 0 0 1 4 4v3"/></svg></div>
-      <div><div class="stat-v">320+</div><div class="stat-l">Active creators</div></div>
+      <div><div class="stat-v">85K+</div><div class="stat-l">Happy clients</div></div>
     </div>
     <div class="stat">
-      <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-      <div><div class="stat-v">Live Preview</div><div class="stat-l">In seconds</div></div>
+      <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <div><div class="stat-v">6+</div><div class="stat-l">Years experience</div></div>
     </div>
     <div class="stat">
-      <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>
-      <div><div class="stat-v">One-Click</div><div class="stat-l">Deploy</div></div>
+      <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <div><div class="stat-v">25+</div><div class="stat-l">Countries served</div></div>
+    </div>
+    <div class="stat">
+      <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l4 4L19 7"/><circle cx="12" cy="12" r="10"/></svg></div>
+      <div><div class="stat-v">99.9%</div><div class="stat-l">Uptime</div></div>
     </div>
   </div>
 </div>
@@ -1680,23 +2308,50 @@
 <section class="sec" id="preview">
   <div class="preview-wrap">
     <div class="preview-copy">
-      <div class="sec-marker"><span class="code">02 / LIVE PREVIEW</span></div>
-      <h3>Watch your website <span class="accent">generate live.</span></h3>
-      <p>Preview the result the moment the swarm finishes. Edit with AI, scan a QR for mobile preview, and ship — all from the same screen.</p>
+      <span class="preview-chip"><span class="dot"></span>LIVE PREVIEW</span>
+      <h3>Watch your website<br>generate <span class="accent">Live.</span></h3>
+      <p>See every change in real-time. Edit, refine, and launch instantly — all from the same screen.</p>
       <ul class="check-list">
-        <li>Live website preview as the swarm builds</li>
-        <li>Desktop, tablet, and mobile responsive views</li>
-        <li>AI edits — refine with follow-up prompts</li>
-        <li>Export code anytime — HTML/CSS/React</li>
-        <li>One-click deploy on Swarmix or custom domain</li>
+        <li>Live Preview</li>
+        <li>Multi-device Rendering</li>
+        <li>AI Edits &amp; Refinements</li>
+        <li>Export Code</li>
+        <li>One-click Deploy</li>
       </ul>
     </div>
-    <div class="preview-img-wrap">
-      <img src="logos/mock%201.png" alt="Swarmix browser preview">
-      <span class="live-tag">Live</span>
-      <div class="preview-url">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="11" width="16" height="10" rx="1.5"/><path d="M8 11V7a4 4 0 1 1 8 0v4"/></svg>
-        swarmix.fzlabs.com/preview/modern-agency
+
+    <div class="preview-stage">
+      <div class="browser-frame">
+        <div class="bf-bar">
+          <div class="bf-dots"><span class="d r"></span><span class="d y"></span><span class="d g"></span></div>
+          <div class="bf-url">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="11" width="16" height="10" rx="1.5"/><path d="M8 11V7a4 4 0 1 1 8 0v4"/></svg>
+            swarmix.fzlabs.com/preview/modern-agency
+          </div>
+          <span class="live-tag">Live</span>
+        </div>
+        <div class="bf-body">
+          <img src="logos/mock%202.png" alt="Modern Agency preview - Desktop">
+        </div>
+        <div class="bf-devices">
+          <button class="dev-btn act">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8"/></svg>
+            Desktop
+          </button>
+          <button class="dev-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/></svg>
+            Tablet
+          </button>
+          <button class="dev-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+            Mobile
+          </button>
+        </div>
+      </div>
+
+      <div class="mobile-preview-frame">
+        <div class="mpf-notch"></div>
+        <img src="logos/mock%204.png" alt="Modern Agency preview - Mobile">
       </div>
     </div>
   </div>
@@ -1704,43 +2359,51 @@
 
 <!-- ═══ TEMPLATES ═══ -->
 <section class="sec" id="templates">
-  <div class="sec-head">
-    <div class="sec-marker"><span class="code">03 / TEMPLATES</span></div>
-    <h2 class="sec-title">Start with <span class="accent">cinematic templates.</span></h2>
-    <p class="sec-lede">Professional blueprints, ready to remix. Pick a starting point — let the swarm tailor it to you.</p>
+  <div class="sec-head-row">
+    <h2 class="sec-title-inline">Start with <span class="accent">Professional Templates</span></h2>
+    <a href="#" class="view-all">View all templates <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
   </div>
-  <div class="tpl-cats">
-    <span class="tpl-cat act">All</span>
-    <span class="tpl-cat">SaaS</span>
-    <span class="tpl-cat">Agency</span>
-    <span class="tpl-cat">Portfolio</span>
-    <span class="tpl-cat">Ecommerce</span>
-    <span class="tpl-cat">Restaurant</span>
-    <span class="tpl-cat">Blog</span>
-  </div>
-  <div class="templates">
+  <div class="templates-row">
     <div class="tpl">
-      <img src="logos/s%20card%201.png" alt="Studio template">
+      <img src="logos/s%20card%201.png" alt="Modern Agency template">
       <div class="tpl-info">
-        <div class="cat">Landing Page</div>
-        <h4>Studio</h4>
-        <a href="#" class="preview-btn">Preview <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        <div class="cat">Agency</div>
+        <h4>Modern Agency</h4>
       </div>
     </div>
     <div class="tpl">
-      <img src="logos/s%20card%202.png" alt="Interior template">
+      <img src="logos/s%20card%202.png" alt="SaaS Landing template">
       <div class="tpl-info">
-        <div class="cat">Design</div>
-        <h4>Interior</h4>
-        <a href="#" class="preview-btn">Preview <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        <div class="cat">SaaS</div>
+        <h4>SaaS Landing</h4>
       </div>
     </div>
     <div class="tpl">
-      <img src="logos/s%20card%203.png" alt="Finance template">
+      <img src="logos/s%20card%203.png" alt="Portfolio template">
       <div class="tpl-info">
-        <div class="cat">Dashboard</div>
-        <h4>Finance</h4>
-        <a href="#" class="preview-btn">Preview <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        <div class="cat">Portfolio</div>
+        <h4>Portfolio</h4>
+      </div>
+    </div>
+    <div class="tpl">
+      <img src="logos/mock%202.png" alt="Ecommerce template">
+      <div class="tpl-info">
+        <div class="cat">Ecommerce</div>
+        <h4>Ecommerce Store</h4>
+      </div>
+    </div>
+    <div class="tpl">
+      <img src="logos/mock%203.png" alt="Restaurant template">
+      <div class="tpl-info">
+        <div class="cat">Restaurant</div>
+        <h4>Restaurant</h4>
+      </div>
+    </div>
+    <div class="tpl">
+      <img src="logos/mock%204.png" alt="Blog template">
+      <div class="tpl-info">
+        <div class="cat">Blog</div>
+        <h4>Blog</h4>
       </div>
     </div>
   </div>
@@ -1748,34 +2411,43 @@
 
 <!-- ═══ AI GENERATE EXPERIENCE ═══ -->
 <section class="sec" id="generate">
-  <div class="sec-head">
-    <div class="sec-marker"><span class="code">04 / GENERATE</span></div>
-    <h2 class="sec-title">Prompt it. <span class="accent">Watch it build.</span></h2>
-    <p class="sec-lede">Choose tone, type, audience — hit generate. Six agents pick up the work in parallel. You watch the timeline fill.</p>
-  </div>
-  <div class="gen-wrap">
+  <div class="gen-wrap-3">
     <div class="gen-prompt">
-      <h4>Describe your website</h4>
-      <div class="sub">Be specific — or vague. The swarm fills the gaps.</div>
+      <h4>Describe. Generate. Launch.</h4>
       <div class="gen-textarea">
-        <span>Build me a cinematic AI startup landing page with a hero, features grid, pricing, and testimonials.</span><span class="cursor"></span>
+        <span>Build me a cinematic AI startup website…</span><span class="cursor"></span>
+        <span class="mic-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="13" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </span>
       </div>
       <div class="gen-row">
-        <div class="gen-row-label">Tone</div>
+        <div class="gen-row-label">Choose a tone</div>
         <div class="gen-chips">
-          <span class="gen-chip">Professional</span>
-          <span class="gen-chip act">Bold</span>
+          <span class="gen-chip act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>Professional</span>
+          <span class="gen-chip">Bold</span>
           <span class="gen-chip">Minimal</span>
           <span class="gen-chip">Creative</span>
         </div>
       </div>
       <div class="gen-row">
-        <div class="gen-row-label">Type</div>
-        <div class="gen-chips">
-          <span class="gen-chip act">Website</span>
-          <span class="gen-chip">Web App</span>
-          <span class="gen-chip">Ecommerce</span>
-          <span class="gen-chip">Portfolio</span>
+        <div class="gen-row-label">Choose type</div>
+        <div class="gen-types">
+          <div class="gt act">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8"/></svg>
+            Website
+          </div>
+          <div class="gt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Web App
+          </div>
+          <div class="gt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+            Ecommerce
+          </div>
+          <div class="gt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
+            Portfolio
+          </div>
         </div>
       </div>
       <button class="gen-action">
@@ -1785,40 +2457,104 @@
     </div>
 
     <div class="gen-progress">
-      <h4>Building your website</h4>
-      <div class="sub">Swarm is working in parallel. ETA 1–2 min.</div>
-      <div class="timeline">
-        <div class="timeline-item done"><span class="timeline-dot"></span>Analyzing the prompt<span class="timeline-meta">0:04</span></div>
-        <div class="timeline-item done"><span class="timeline-dot"></span>Researching references<span class="timeline-meta">0:09</span></div>
-        <div class="timeline-item done"><span class="timeline-dot"></span>Designing system<span class="timeline-meta">0:18</span></div>
-        <div class="timeline-item act"><span class="timeline-dot"></span>Writing code<span class="timeline-meta">…</span></div>
-        <div class="timeline-item"><span class="timeline-dot"></span>Optimizing &amp; testing<span class="timeline-meta">queued</span></div>
-        <div class="timeline-item"><span class="timeline-dot"></span>Deploying preview<span class="timeline-meta">queued</span></div>
+      <div class="gen-progress-h">
+        <h4>AI is building your website...</h4>
+        <span class="live-mark"><span class="dot"></span>Live Process</span>
       </div>
-      <div class="live-feed">
-        <div class="live-feed-stream">
-          <div class="feed-line"><span class="ts">10:24:38</span><span class="ag">[planner]</span><span class="ev">analyzed the prompt</span><span class="ok">✓</span></div>
-          <div class="feed-line"><span class="ts">10:24:41</span><span class="ag">[designer]</span><span class="ev">created the first draft</span><span class="ok">✓</span></div>
-          <div class="feed-line"><span class="ts">10:24:52</span><span class="ag">[developer]</span><span class="ev">setting up the project</span></div>
-          <div class="feed-line"><span class="ts">10:25:04</span><span class="ag">[writer]</span><span class="ev">generated hero content</span><span class="ok">✓</span></div>
-          <div class="feed-line"><span class="ts">10:25:12</span><span class="ag">[media]</span><span class="ev">created hero visual</span><span class="ok">✓</span></div>
-          <div class="feed-line"><span class="ts">10:25:19</span><span class="ag">[qa]</span><span class="ev">checking responsiveness</span></div>
-          <!-- Loop -->
-          <div class="feed-line"><span class="ts">10:24:38</span><span class="ag">[planner]</span><span class="ev">analyzed the prompt</span><span class="ok">✓</span></div>
-          <div class="feed-line"><span class="ts">10:24:41</span><span class="ag">[designer]</span><span class="ev">created the first draft</span><span class="ok">✓</span></div>
-          <div class="feed-line"><span class="ts">10:24:52</span><span class="ag">[developer]</span><span class="ev">setting up the project</span></div>
-          <div class="feed-line"><span class="ts">10:25:04</span><span class="ag">[writer]</span><span class="ev">generated hero content</span><span class="ok">✓</span></div>
-          <div class="feed-line"><span class="ts">10:25:12</span><span class="ag">[media]</span><span class="ev">created hero visual</span><span class="ok">✓</span></div>
-          <div class="feed-line"><span class="ts">10:25:19</span><span class="ag">[qa]</span><span class="ev">checking responsiveness</span></div>
+      <div class="vtimeline">
+        <div class="vt-item done">
+          <span class="vt-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 13l4 4L19 7"/></svg></span>
+          <div class="vt-body">
+            <div class="vt-title">Analyzing your prompt</div>
+            <div class="vt-sub">Completed</div>
+          </div>
+          <span class="vt-state ok"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4" stroke="#0a0501" stroke-width="2.4" fill="none"/></svg></span>
+        </div>
+        <div class="vt-item done">
+          <span class="vt-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 13l4 4L19 7"/></svg></span>
+          <div class="vt-body">
+            <div class="vt-title">Researching &amp; planning</div>
+            <div class="vt-sub">Completed</div>
+          </div>
+          <span class="vt-state ok"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4" stroke="#0a0501" stroke-width="2.4" fill="none"/></svg></span>
+        </div>
+        <div class="vt-item act">
+          <span class="vt-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/></svg></span>
+          <div class="vt-body">
+            <div class="vt-title">Designing UI/UX</div>
+            <div class="vt-sub">In progress</div>
+          </div>
+          <span class="vt-state spinning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 12a9 9 0 11-6.2-8.5"/></svg></span>
+        </div>
+        <div class="vt-item">
+          <span class="vt-num"></span>
+          <div class="vt-body">
+            <div class="vt-title">Writing clean code</div>
+            <div class="vt-sub">Pending</div>
+          </div>
+          <span class="vt-state pending">Pending</span>
+        </div>
+        <div class="vt-item">
+          <span class="vt-num"></span>
+          <div class="vt-body">
+            <div class="vt-title">Optimizing &amp; testing</div>
+            <div class="vt-sub">Pending</div>
+          </div>
+          <span class="vt-state pending">Pending</span>
+        </div>
+        <div class="vt-item">
+          <span class="vt-num"></span>
+          <div class="vt-body">
+            <div class="vt-title">Deploying to cloud</div>
+            <div class="vt-sub">Pending</div>
+          </div>
+          <span class="vt-state pending">Pending</span>
         </div>
       </div>
+    </div>
+
+    <div class="gen-activity">
+      <h5>Live Activity</h5>
+      <div class="act-list">
+        <div class="act-row">
+          <div class="act-time mono">10:24:31</div>
+          <div class="act-body">
+            <div class="act-title">Designer generated <span class="hl">hero section</span></div>
+          </div>
+        </div>
+        <div class="act-row">
+          <div class="act-time mono">10:24:30</div>
+          <div class="act-body">
+            <div class="act-title">Writer created <span class="hl">about section</span></div>
+          </div>
+        </div>
+        <div class="act-row">
+          <div class="act-time mono">10:24:29</div>
+          <div class="act-body">
+            <div class="act-title">Developer building <span class="hl">responsive layout</span></div>
+          </div>
+        </div>
+        <div class="act-row">
+          <div class="act-time mono">10:24:28</div>
+          <div class="act-body">
+            <div class="act-title">AI optimizing <span class="hl">images</span></div>
+          </div>
+        </div>
+        <div class="act-row">
+          <div class="act-time mono">10:24:27</div>
+          <div class="act-body">
+            <div class="act-title">Setting up <span class="hl">deployment…</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="eta mono">Estimated time: 1–2 min</div>
     </div>
   </div>
 </section>
 
 <!-- ═══ MOBILE SHOWCASE ═══ -->
 <section class="sec" id="mobile">
-  <div class="mobile-showcase">
+  <div class="mobile-showcase-3">
     <div class="phones-row">
       <div class="ph"><img src="logos/mobile%201.png" alt="Templates"></div>
       <div class="ph"><img src="logos/mobile%202.png" alt="Preview"></div>
@@ -1827,9 +2563,8 @@
       <div class="ph"><img src="logos/mobile%205.png" alt="Projects"></div>
     </div>
     <div class="mobile-copy">
-      <div class="sec-marker"><span class="code">05 / MOBILE</span></div>
-      <h3>Build <span class="accent">anywhere.</span></h3>
-      <p>Swarmix mobile is the cockpit. Voice or type a prompt, watch the swarm build, preview, refine, publish — from your phone, on the bus, before the meeting, after midnight.</p>
+      <h3>Build Anywhere with<br><span class="accent">Swarmix Mobile</span></h3>
+      <p>Create, edit, preview and deploy websites from your phone. Power in your pocket.</p>
       <div class="mobile-stores">
         <a href="#" class="store-badge">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-2.85 2.33-4.21 2.43-4.27-1.32-1.93-3.39-2.2-4.12-2.23-1.76-.18-3.43 1.04-4.32 1.04-.9 0-2.27-1.02-3.73-.99-1.92.03-3.69 1.12-4.68 2.83-2 3.46-.51 8.59 1.42 11.4.95 1.38 2.07 2.92 3.53 2.86 1.42-.06 1.96-.92 3.68-.92 1.71 0 2.21.92 3.71.89 1.53-.03 2.5-1.4 3.43-2.78 1.08-1.6 1.53-3.15 1.55-3.23-.03-.01-2.99-1.15-3.02-4.6zm-2.83-8.46c.78-.95 1.31-2.27 1.16-3.58-1.13.05-2.49.75-3.3 1.7-.72.84-1.36 2.18-1.19 3.47 1.26.1 2.55-.65 3.33-1.59z"/></svg>
@@ -1839,6 +2574,18 @@
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 1.5C3.2 1.7 3 2.1 3 2.6v18.7c0 .5.2.9.6 1.2l10.6-10.5L3.6 1.5z" opacity="0.85"/><path d="M16.8 8.7L5.5 2.2 14.3 11l2.5-2.3z" opacity="0.6"/><path d="M21.4 11l-4.6-2.3-2.7 2.5 2.7 2.5 4.7-2.6c.6-.3.6-1.7-.1-2.1z" opacity="0.7"/><path d="M5.6 21.8l11.3-6.5-2.6-2.5L5.6 21.8z"/></svg>
           <span><span class="lbl1">GET IT ON</span><span class="lbl2">Google Play</span></span>
         </a>
+      </div>
+    </div>
+    <div class="qr-card">
+      <div class="qr-title">Scan to Download</div>
+      <div class="qr-grid">
+        <div class="qr-bee">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="12,2 21,7 21,17 12,22 3,17 3,7" opacity="0.18"/>
+            <ellipse cx="12" cy="13" rx="4" ry="5"/>
+            <path d="M9 11h6 M9 14h6" stroke="#0a0501" stroke-width="0.9"/>
+          </svg>
+        </div>
       </div>
     </div>
   </div>
@@ -1870,51 +2617,35 @@
     </div>
     <div class="feat">
       <div class="feat-row">
-        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="13" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div>
+        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
         <div class="feat-code mono">F-03</div>
       </div>
-      <h4>Voice Prompt</h4>
-      <p>Speak your idea. Built-in transcription handles EN and AR.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-row">
-        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-        <div class="feat-code mono">F-04</div>
-      </div>
       <h4>Live Preview</h4>
-      <p>Watch the site appear — desktop and mobile, in real time.</p>
+      <p>See changes in real-time across all devices.</p>
     </div>
     <div class="feat">
       <div class="feat-row">
         <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l4 4L19 7"/><circle cx="12" cy="12" r="10"/></svg></div>
-        <div class="feat-code mono">F-05</div>
+        <div class="feat-code mono">F-04</div>
       </div>
       <h4>Instant Deploy</h4>
-      <p>One click to a live URL. Custom domain. SSL and CDN out of the box.</p>
+      <p>Publish your site with one single click.</p>
     </div>
     <div class="feat">
       <div class="feat-row">
         <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg></div>
-        <div class="feat-code mono">F-06</div>
+        <div class="feat-code mono">F-05</div>
       </div>
       <h4>Backend Included</h4>
-      <p>Auth, database, and APIs are wired up. Just plug your data.</p>
-    </div>
-    <div class="feat">
-      <div class="feat-row">
-        <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="9 8 5 12 9 16"/><polyline points="15 8 19 12 15 16"/></svg></div>
-        <div class="feat-code mono">F-07</div>
-      </div>
-      <h4>Export Code</h4>
-      <p>Own everything. Export clean HTML/CSS/React. No vendor lock-in.</p>
+      <p>Databases, auth, APIs — ready to use.</p>
     </div>
     <div class="feat">
       <div class="feat-row">
         <div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2M14 14h3a4 4 0 0 1 4 4v3"/></svg></div>
-        <div class="feat-code mono">F-08</div>
+        <div class="feat-code mono">F-06</div>
       </div>
       <h4>Team Collaboration</h4>
-      <p>Share, edit, comment, hand off — in one workspace.</p>
+      <p>Invite your team and build together.</p>
     </div>
   </div>
 </section>
@@ -1991,20 +2722,26 @@
 </section>
 
 <!-- ═══ FINAL CTA ═══ -->
-<div class="final-cta" id="start">
-  <h2>Start building the <span class="accent">future.</span></h2>
-  <p>Generate your first website with AI and launch it in minutes. No credit card required.</p>
-  <div class="hero-ctas">
-    <a href="#" class="btn btn-primary">
-      Generate Your First Project
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <a href="#demo" class="btn btn-secondary">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-      Watch Demo
-    </a>
+<div class="final-cta-wrap" id="start">
+  <div class="final-cta-2">
+    <div class="final-cta-img">
+      <img src="logos/Mascot%20background.png" alt="Swarmix mascot">
+    </div>
+    <div class="final-cta-copy">
+      <h2>Ready to Build the <span class="accent">Future?</span></h2>
+      <p>Join thousands of creators building stunning websites with AI.</p>
+      <div class="hero-ctas">
+        <a href="#" class="btn btn-primary">
+          Generate Your First Project
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#demo" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Watch Demo
+        </a>
+      </div>
+    </div>
   </div>
-  <div class="note">No credit card · 100 generations free · Cancel anytime</div>
 </div>
 
 <!-- ═══ FOOTER ═══ -->
@@ -2015,56 +2752,58 @@
         <img src="logos/swarmix%20logo.png" alt="Swarmix">
         <span class="name">SWARMIX</span>
       </a>
-      <p class="foot-tagline">From prompt to production. AI-native web creation platform by FZ Labs.</p>
+      <p class="foot-tagline">AI-powered platform for building stunning websites and web apps at the speed of thought.</p>
     </div>
     <div class="foot-col">
       <h5>Product</h5>
       <ul>
         <li><a href="#features">Features</a></li>
         <li><a href="#templates">Templates</a></li>
-        <li><a href="#pricing">Pricing</a></li>
         <li><a href="#agents">AI Agents</a></li>
+        <li><a href="#pricing">Pricing</a></li>
       </ul>
     </div>
     <div class="foot-col">
       <h5>Resources</h5>
       <ul>
-        <li><a href="#">Docs</a></li>
-        <li><a href="#">API</a></li>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">Guides</a></li>
+        <li><a href="#">Blog</a></li>
         <li><a href="#">Changelog</a></li>
-        <li><a href="#">Status</a></li>
       </ul>
     </div>
     <div class="foot-col">
       <h5>Company</h5>
       <ul>
-        <li><a href="https://fzlabs.com">FZ Labs</a></li>
-        <li><a href="#">About</a></li>
+        <li><a href="https://fzlabs.com">About Us</a></li>
         <li><a href="#">Careers</a></li>
+        <li><a href="#">Blog</a></li>
         <li><a href="#">Contact</a></li>
+        <li><a href="#">Partners</a></li>
       </ul>
     </div>
     <div class="foot-col">
-      <h5>Newsletter</h5>
-      <p style="color: var(--text-3); font-size: 0.78rem; margin-bottom: 0.7rem;">Get updates on new features and templates.</p>
-      <form class="newsletter-form" onsubmit="event.preventDefault(); this.querySelector('input').value=''; this.querySelector('button').textContent='✓';">
-        <input type="email" placeholder="your@email.com" required>
-        <button type="submit">Subscribe</button>
-      </form>
-      <div class="foot-social" style="margin-top: 1rem;">
-        <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-        <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.79 23.4c.6.1.83-.26.83-.58v-2.04c-3.34.72-4.04-1.6-4.04-1.6-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.08-.73.08-.73 1.2.08 1.83 1.24 1.83 1.24 1.07 1.83 2.81 1.3 3.5.99.1-.78.42-1.3.76-1.6-2.66-.3-5.47-1.34-5.47-5.94 0-1.31.47-2.38 1.24-3.22-.13-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 5.8a11.5 11.5 0 0 1 3 .4c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.25 2.87.12 3.18.78.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.21.69.83.58A12 12 0 0 0 12 .3"/></svg></a>
-        <a href="#" aria-label="Discord"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.32 4.37A19.79 19.79 0 0 0 16.6 3.2a14.55 14.55 0 0 0-.66 1.36 18.27 18.27 0 0 0-5.5 0 12.6 12.6 0 0 0-.67-1.36c-1.32.23-2.59.62-3.78 1.17C2.62 8.04 1.95 11.6 2.28 15.1a19.96 19.96 0 0 0 6.07 3.04 14.4 14.4 0 0 0 1.3-2.1c-.7-.27-1.38-.6-2.02-.99l.5-.39a14.27 14.27 0 0 0 12.36 0l.5.4c-.65.39-1.32.71-2.03.98.39.74.83 1.45 1.3 2.1a19.93 19.93 0 0 0 6.06-3.04c.39-4.06-.66-7.6-2.99-10.74zM9.85 13.97c-1.18 0-2.16-1.08-2.16-2.4 0-1.32.95-2.41 2.16-2.41 1.21 0 2.18 1.09 2.16 2.41 0 1.32-.96 2.4-2.16 2.4zm7.97 0c-1.18 0-2.16-1.08-2.16-2.4 0-1.32.95-2.41 2.16-2.41 1.21 0 2.19 1.09 2.16 2.41 0 1.32-.95 2.4-2.16 2.4z"/></svg></a>
-      </div>
+      <h5>Legal</h5>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="#">Security</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot-social-row">
+    <div class="foot-social">
+      <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68zm1.39 9.94v-8.37H5.5v8.37z"/></svg></a>
+      <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.79 23.4c.6.1.83-.26.83-.58v-2.04c-3.34.72-4.04-1.6-4.04-1.6-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.08-.73.08-.73 1.2.08 1.83 1.24 1.83 1.24 1.07 1.83 2.81 1.3 3.5.99.1-.78.42-1.3.76-1.6-2.66-.3-5.47-1.34-5.47-5.94 0-1.31.47-2.38 1.24-3.22-.13-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 5.8a11.5 11.5 0 0 1 3 .4c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.25 2.87.12 3.18.78.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.21.69.83.58A12 12 0 0 0 12 .3"/></svg></a>
+      <a href="#" aria-label="Discord"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.32 4.37A19.79 19.79 0 0 0 16.6 3.2a14.55 14.55 0 0 0-.66 1.36 18.27 18.27 0 0 0-5.5 0 12.6 12.6 0 0 0-.67-1.36c-1.32.23-2.59.62-3.78 1.17C2.62 8.04 1.95 11.6 2.28 15.1a19.96 19.96 0 0 0 6.07 3.04 14.4 14.4 0 0 0 1.3-2.1c-.7-.27-1.38-.6-2.02-.99l.5-.39a14.27 14.27 0 0 0 12.36 0l.5.4c-.65.39-1.32.71-2.03.98.39.74.83 1.45 1.3 2.1a19.93 19.93 0 0 0 6.06-3.04c.39-4.06-.66-7.6-2.99-10.74zM9.85 13.97c-1.18 0-2.16-1.08-2.16-2.4 0-1.32.95-2.41 2.16-2.41 1.21 0 2.18 1.09 2.16 2.41 0 1.32-.96 2.4-2.16 2.4zm7.97 0c-1.18 0-2.16-1.08-2.16-2.4 0-1.32.95-2.41 2.16-2.41 1.21 0 2.19 1.09 2.16 2.41 0 1.32-.95 2.4-2.16 2.4z"/></svg></a>
+      <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1c-1.9-.5-9.4-.5-9.4-.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/></svg></a>
     </div>
   </div>
   <div class="foot-bottom">
-    <div class="foot-credit">© 2026 <a href="https://fzlabs.com">FZ Labs</a> · Swarmix — Build. Launch. Evolve.</div>
-    <div class="foot-bottom-links">
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-      <a href="#">Security</a>
-    </div>
+    <div class="foot-credit">© 2026 <a href="https://fzlabs.com">FZ Labs</a>. All rights reserved.</div>
   </div>
 </footer>
 
