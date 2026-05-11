@@ -230,16 +230,40 @@
   .nav-cta {
     display: inline-flex; align-items: center; gap: 0.4rem;
     padding: 0.65rem 1.2rem;
-    background: linear-gradient(135deg, var(--honey) 0%, var(--honey-deep) 100%);
+    background: linear-gradient(135deg, var(--honey-deep) 0%, var(--honey) 35%, var(--honey-2) 65%, var(--honey-deep) 100%);
+    background-size: 220% 100%;
+    background-position: 0% 50%;
     border: 1px solid rgba(255,179,80,0.55);
     border-radius: 100px;
     color: #1a0a02;
     font-size: 0.85rem; font-weight: 700;
-    transition: filter 0.25s, transform 0.25s, box-shadow 0.25s;
+    transition: filter 0.25s, transform 0.25s, background-position 0.8s var(--ease), box-shadow 0.4s;
     box-shadow: 0 6px 24px rgba(255,157,0,0.42), inset 0 1px 0 rgba(255,255,255,0.25);
+    position: relative;
+    overflow: hidden;
+    animation: ctaGlow 3.2s ease-in-out infinite;
   }
-  .nav-cta:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 14px 34px rgba(255,157,0,0.55), inset 0 1px 0 rgba(255,255,255,0.3); }
-  .nav-cta svg { width: 13px; height: 13px; }
+  @keyframes ctaGlow {
+    0%, 100% { box-shadow: 0 6px 22px rgba(255,157,0,0.38), inset 0 1px 0 rgba(255,255,255,0.22); }
+    50%      { box-shadow: 0 8px 30px rgba(255,157,0,0.62), inset 0 1px 0 rgba(255,255,255,0.32); }
+  }
+  .nav-cta::before {
+    content:''; position: absolute; top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.42), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.7s var(--ease);
+    pointer-events: none;
+  }
+  .nav-cta:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    background-position: 100% 50%;
+    box-shadow: 0 14px 36px rgba(255,157,0,0.6), inset 0 1px 0 rgba(255,255,255,0.32);
+  }
+  .nav-cta:hover::before { left: 140%; }
+  .nav-cta svg { width: 13px; height: 13px; transition: transform 0.35s var(--ease); position: relative; z-index: 1; }
+  .nav-cta:hover svg { transform: translateX(3px); }
   @media (max-width: 1080px) {
     .nav-links { display: none; }
     .nav-beta { display: none; }
@@ -576,11 +600,40 @@
     color: var(--honey-3);
     margin-bottom: 0.9rem;
     position: relative;
-    animation: nodeBreath 3.5s ease-in-out infinite;
+    animation: nodeCascade 6s ease-in-out infinite;
   }
-  @keyframes nodeBreath {
-    0%, 100% { filter: drop-shadow(0 0 10px rgba(255,157,0,0.45)); }
-    50%      { filter: drop-shadow(0 0 22px rgba(255,157,0,0.85)); }
+  /* Sequential cascade — each proc lights up 1s after the previous */
+  .process .proc:nth-child(1) .proc-ic { animation-delay: 0s; }
+  .process .proc:nth-child(2) .proc-ic { animation-delay: 1s; }
+  .process .proc:nth-child(3) .proc-ic { animation-delay: 2s; }
+  .process .proc:nth-child(4) .proc-ic { animation-delay: 3s; }
+  .process .proc:nth-child(5) .proc-ic { animation-delay: 4s; }
+  .process .proc:nth-child(6) .proc-ic { animation-delay: 5s; }
+  @keyframes nodeCascade {
+    0%, 10%, 100% { filter: drop-shadow(0 0 8px rgba(255,157,0,0.35)); color: var(--honey-3); transform: scale(1); }
+    16%           { filter: drop-shadow(0 0 26px rgba(255,157,0,1)); color: #fff; transform: scale(1.12); }
+    26%           { filter: drop-shadow(0 0 12px rgba(255,157,0,0.6)); transform: scale(1); }
+  }
+  /* Connecting line between steps */
+  .process .proc { position: relative; }
+  .process .proc:not(:last-child)::after {
+    content:''; position: absolute;
+    top: calc(0.9rem + 19px);
+    left: calc(50% + 19px); right: calc(-50% + 19px);
+    height: 1px;
+    background-image: linear-gradient(90deg, rgba(255,170,60,0.4) 50%, transparent 50%);
+    background-size: 6px 1px;
+    background-repeat: repeat-x;
+    z-index: 0;
+    pointer-events: none;
+  }
+  @media (max-width: 1100px) { .process .proc::after { display: none; } }
+  .process .proc:hover .proc-ic {
+    animation-play-state: paused;
+    color: #fff;
+    filter: drop-shadow(0 0 28px rgba(255,157,0,1));
+    transform: scale(1.15);
+    transition: all 0.3s var(--ease);
   }
   .proc-ic svg { width: 18px; height: 18px; position: relative; z-index: 1; }
   .proc h4 {
@@ -723,9 +776,9 @@
   .preview-stage {
     position: relative;
     display: grid;
-    grid-template-columns: 1fr 0.28fr;
+    grid-template-columns: 1fr 0.24fr;
     gap: 0.9rem;
-    align-items: stretch;
+    align-items: center;
   }
   .preview-stage::before {
     content:''; position: absolute;
@@ -1143,8 +1196,52 @@
 
   .gen-progress-h {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.9rem;
     flex-wrap: wrap; gap: 0.5rem;
+  }
+  .dotdot {
+    display: inline-block;
+    width: 1.2em; text-align: left;
+    color: var(--honey-3);
+    animation: dotdotdot 1.4s steps(4, end) infinite;
+    overflow: hidden;
+  }
+  @keyframes dotdotdot {
+    0%   { width: 0; }
+    100% { width: 1.2em; }
+  }
+  .gen-progress-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+    position: relative;
+  }
+  .gen-progress-fill {
+    height: 100%;
+    width: 42%;
+    background: linear-gradient(90deg, var(--honey-deep), var(--honey), var(--honey-2));
+    border-radius: 100px;
+    box-shadow: 0 0 10px rgba(255,157,0,0.7);
+    position: relative;
+    animation: progressFill 4s ease-in-out infinite;
+  }
+  @keyframes progressFill {
+    0%   { width: 28%; }
+    50%  { width: 64%; }
+    100% { width: 28%; }
+  }
+  .gen-progress-fill::after {
+    content:''; position: absolute; top: 0; right: 0; bottom: 0;
+    width: 20px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5));
+    animation: progressShimmer 1.4s linear infinite;
+  }
+  @keyframes progressShimmer {
+    0%   { opacity: 0; transform: translateX(20px); }
+    50%  { opacity: 1; }
+    100% { opacity: 0; transform: translateX(-20px); }
   }
   .gen-progress-h h4 {
     font-family: 'Space Grotesk', sans-serif;
@@ -1580,7 +1677,7 @@
   .phones-row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 0.6rem;
+    gap: 1.1rem;
     perspective: 2400px;
     perspective-origin: 50% 50%;
     position: relative;
@@ -1677,7 +1774,13 @@
   @media (max-width: 880px) { .features { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 540px) { .features { grid-template-columns: 1fr; } }
   .feat {
-    background: var(--card);
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 100'%3E%3Cpolygon points='28,2 54,17 54,47 28,62 2,47 2,17' fill='none' stroke='%23FFAA3C' stroke-opacity='0.18' stroke-width='1'/%3E%3Cpolygon points='28,52 54,67 54,97 28,112 2,97 2,67' fill='none' stroke='%23FFAA3C' stroke-opacity='0.18' stroke-width='1'/%3E%3C/svg%3E"),
+      var(--card);
+    background-size: 56px 100px, auto;
+    background-position: -10px -10px, 0 0;
+    background-repeat: repeat, no-repeat;
+    background-blend-mode: normal;
     border: 1px solid rgba(255,170,60,0.14);
     border-radius: var(--r-lg);
     padding: 1.4rem 1.3rem;
@@ -1691,11 +1794,18 @@
     background: linear-gradient(90deg, transparent, rgba(255,170,60,0.44), transparent);
     opacity: 0.5;
   }
+  /* Mouse-tracking hover light */
+  .feat::after {
+    content:''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(280px circle at var(--mx, 50%) var(--my, -30%), rgba(255,157,0,0.18), transparent 55%);
+    opacity: 0; transition: opacity 0.4s;
+  }
   .feat:hover {
     transform: translateY(-3px);
-    border-color: rgba(255,170,60,0.34);
-    box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 60px rgba(255,157,0,0.16);
+    border-color: rgba(255,170,60,0.4);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 70px rgba(255,157,0,0.22);
   }
+  .feat:hover::after { opacity: 1; }
   .feat-row {
     display: flex; justify-content: space-between; align-items: flex-start;
     margin-bottom: 1rem;
@@ -1707,9 +1817,20 @@
     display: flex; align-items: center; justify-content: center;
     color: var(--honey-3);
     position: relative;
-    animation: nodeBreath 4s ease-in-out infinite;
+    animation: featBreath 4s ease-in-out infinite;
+    transition: transform 0.4s var(--ease), filter 0.4s var(--ease);
   }
-  .feat-icon svg { width: 18px; height: 18px; position: relative; z-index: 1; }
+  @keyframes featBreath {
+    0%, 100% { filter: drop-shadow(0 0 10px rgba(255,157,0,0.4)); }
+    50%      { filter: drop-shadow(0 0 22px rgba(255,157,0,0.78)); }
+  }
+  .feat:hover .feat-icon {
+    transform: rotate(12deg) scale(1.08);
+    filter: drop-shadow(0 0 28px rgba(255,157,0,0.95));
+    color: #fff;
+  }
+  .feat-icon svg { width: 18px; height: 18px; position: relative; z-index: 1; transition: transform 0.4s var(--ease); }
+  .feat:hover .feat-icon svg { transform: rotate(-12deg); }
   .feat-code {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.6rem; font-weight: 600;
@@ -1802,10 +1923,42 @@
   /* ═══════════════════════════════════════════
      PRICING
   ═══════════════════════════════════════════ */
+  /* Pricing cinematic backdrop */
+  .pricing-sec { position: relative; overflow: hidden; }
+  .pricing-bg {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 50% 60% at 50% 50%, rgba(255,157,0,0.18), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 50% 100%, rgba(255,106,0,0.12), transparent 65%);
+  }
+  .pricing-bg::before {
+    content:''; position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 100'%3E%3Cpolygon points='28,2 54,17 54,47 28,62 2,47 2,17' fill='none' stroke='%23FFAA3C' stroke-opacity='0.32' stroke-width='1'/%3E%3Cpolygon points='28,52 54,67 54,97 28,112 2,97 2,67' fill='none' stroke='%23FFAA3C' stroke-opacity='0.32' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 56px 100px;
+    opacity: 0.15;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 0%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 0%, transparent 80%);
+  }
+  /* Floating hex dots */
+  .pricing-bg::after {
+    content:''; position: absolute;
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    border: 1px dashed rgba(255,170,60,0.18);
+    box-shadow:
+      0 0 0 40px rgba(255,170,60,0.04),
+      0 0 0 80px rgba(255,170,60,0.02);
+    animation: ringSpin 80s linear infinite;
+    opacity: 0.6;
+  }
+  .pricing-sec > * { position: relative; z-index: 1; }
+
   .price-grid {
     display: grid; grid-template-columns: repeat(3, 1fr);
     gap: 1.2rem;
     max-width: 1100px; margin: 0 auto;
+    align-items: center;
   }
   @media (max-width: 880px) { .price-grid { grid-template-columns: 1fr; } }
   .price {
@@ -1824,9 +1977,27 @@
   }
   .price:hover { transform: translateY(-4px); border-color: rgba(255,170,60,0.3); }
   .price.featured {
-    border-color: rgba(255,170,60,0.45);
-    background: linear-gradient(180deg, rgba(255,157,0,0.08), rgba(20,12,4,0.75));
-    box-shadow: 0 35px 80px rgba(255,157,0,0.22);
+    border-color: rgba(255,170,60,0.55);
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255,157,0,0.22), transparent 65%),
+      linear-gradient(180deg, rgba(255,157,0,0.12), rgba(20,12,4,0.85));
+    box-shadow:
+      0 40px 90px rgba(255,157,0,0.32),
+      0 0 70px rgba(255,157,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.12);
+    transform: scale(1.04);
+    z-index: 2;
+  }
+  .price.featured:hover { transform: scale(1.05) translateY(-4px); }
+  /* Animated border ring on Pro card */
+  .price.featured > .pro-ring {
+    position: absolute; inset: -1px;
+    border-radius: calc(var(--r-2xl) + 1px);
+    padding: 1.5px; pointer-events: none;
+    background: conic-gradient(from 0deg, rgba(255,170,60,0.65), rgba(255,106,0,0.3), rgba(255,170,60,0.65), rgba(255,179,80,0.45), rgba(255,170,60,0.65));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: ringSpin 8s linear infinite;
   }
   .price.featured::before { background: linear-gradient(90deg, transparent, rgba(255,170,60,0.7), transparent); }
   .price.featured::after {
@@ -2062,12 +2233,20 @@
     color: var(--text-1);
     margin-bottom: 1rem;
   }
+  .foot-brand {
+    position: relative;
+  }
   .foot-brand img {
     height: 34px; width: auto;
     aspect-ratio: 2450 / 664;
     object-fit: contain;
     display: block;
     filter: drop-shadow(0 0 12px rgba(255,157,0,0.4));
+    animation: footBeeBreath 3.5s ease-in-out infinite;
+  }
+  @keyframes footBeeBreath {
+    0%, 100% { filter: drop-shadow(0 0 10px rgba(255,157,0,0.35)); }
+    50%      { filter: drop-shadow(0 0 20px rgba(255,157,0,0.85)); }
   }
   .foot-brand .name {
     font-family: 'Space Grotesk', sans-serif;
@@ -2254,19 +2433,19 @@
   <div class="stats">
     <div class="stat">
       <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-      <div><div class="stat-v">120+</div><div class="stat-l">Projects delivered</div></div>
+      <div><div class="stat-v">340+</div><div class="stat-l">Projects delivered</div></div>
     </div>
     <div class="stat">
-      <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2M14 14h3a4 4 0 0 1 4 4v3"/></svg></div>
-      <div><div class="stat-v">85K+</div><div class="stat-l">Happy clients</div></div>
-    </div>
-    <div class="stat">
-      <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-      <div><div class="stat-v">6+</div><div class="stat-l">Years experience</div></div>
+      <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 L 15 10 L 22 12 L 15 14 L 12 22 L 9 14 L 2 12 L 9 10 Z"/></svg></div>
+      <div><div class="stat-v">12K+</div><div class="stat-l">AI generations</div></div>
     </div>
     <div class="stat">
       <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-      <div><div class="stat-v">25+</div><div class="stat-l">Countries served</div></div>
+      <div><div class="stat-v">18+</div><div class="stat-l">Countries served</div></div>
+    </div>
+    <div class="stat">
+      <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2M14 14h3a4 4 0 0 1 4 4v3"/></svg></div>
+      <div><div class="stat-v">2.4K</div><div class="stat-l">Active creators</div></div>
     </div>
     <div class="stat">
       <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l4 4L19 7"/><circle cx="12" cy="12" r="10"/></svg></div>
@@ -2476,9 +2655,10 @@
 
     <div class="gen-progress">
       <div class="gen-progress-h">
-        <h4>AI is building your website...</h4>
+        <h4>AI is building your website<span class="dotdot">...</span></h4>
         <span class="live-mark"><span class="dot"></span>Live Process</span>
       </div>
+      <div class="gen-progress-bar"><div class="gen-progress-fill"></div></div>
       <div class="vtimeline">
         <div class="vt-item done">
           <span class="vt-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 13l4 4L19 7"/></svg></span>
@@ -2688,7 +2868,8 @@
 </section>
 
 <!-- ═══ PRICING ═══ -->
-<section class="sec" id="pricing">
+<section class="sec pricing-sec" id="pricing">
+  <div class="pricing-bg"></div>
   <div class="sec-head">
     <div class="sec-marker"><span class="code">07 / PRICING</span></div>
     <h2 class="sec-title">Simple plans. <span class="accent">Honest pricing.</span></h2>
@@ -2709,6 +2890,7 @@
       <a href="#start" class="price-cta outline">Get Started Free</a>
     </div>
     <div class="price featured">
+      <span class="pro-ring"></span>
       <div class="price-tier">Tier · 02</div>
       <div class="price-name">Pro</div>
       <div class="price-tagline">For builders shipping daily.</div>
@@ -2823,6 +3005,17 @@
     <div class="foot-credit">© 2026 <a href="https://fzlabs.com">FZ Labs</a>. All rights reserved.</div>
   </div>
 </footer>
+
+<script>
+  // Mouse-tracking hover lighting on feature cards
+  document.querySelectorAll('.feat').forEach(card => {
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      card.style.setProperty('--my', `${e.clientY - r.top}px`);
+    });
+  });
+</script>
 
 </body>
 </html>
