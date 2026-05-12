@@ -24,6 +24,26 @@
     },
     {
       "source": "/",
+      "has": [{ "type": "host", "value": "signalnews.fzlabs.com" }],
+      "destination": "/signalnews"
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "signalnews.fzlabs.com" }],
+      "destination": "/signalnews/$1"
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "f0.fzlabs.com" }],
+      "destination": "/f0"
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "f0.fzlabs.com" }],
+      "destination": "/f0/$1"
+    },
+    {
+      "source": "/",
       "destination": "/main"
     },
     {
